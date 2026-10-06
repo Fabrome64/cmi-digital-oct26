@@ -1,0 +1,22 @@
+{
+  "name": "CMI DIGITAL - Impresiones, Marketing & Web",
+  "short_name": "CMI DIGITAL",
+  "description": "Aplicación oficial de CMI DIGITAL: Impresiones Gran Formato, Marketing Digital y Desarrollo Web en San José de Feliciano.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111827",
+  "theme_color": "#FFD400",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=192&q=80",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=512&q=80",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

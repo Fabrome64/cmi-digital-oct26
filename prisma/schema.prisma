@@ -1,0 +1,194 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("ADMIN") // ADMIN, EDITOR, FUTURO_CLIENTE
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Client {
+  id            String            @id @default(uuid())
+  nombre        String
+  apellido      String?
+  empresa       String?
+  cuitDni       String?
+  telefono      String?
+  whatsapp      String?
+  email         String?
+  direccion     String?
+  localidad     String?
+  provincia     String?
+  observaciones String?
+  estado        String            @default("Activo") // Activo, Inactivo
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  budgets       Budget[]
+  subscriptions WebSubscription[]
+}
+
+model WebPortfolio {
+  id              String   @id @default(uuid())
+  titulo          String
+  cliente         String
+  descripcion     String
+  imagenPrincipal String
+  imagenes        String   @default("[]") // JSON string of gallery URLs
+  url             String?
+  categoria       String
+  tecnologias     String   // Comma separated tags e.g. "Next.js, Tailwind, SQLite"
+  destacado       Boolean  @default(false)
+  orden           Int      @default(0)
+  activo          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model MarketingService {
+  id            String   @id @default(uuid())
+  titulo        String
+  descripcion   String
+  icono         String   @default("Share2")
+  imagen        String?
+  precioOpcional String?
+  destacado     Boolean  @default(false)
+  orden         Int      @default(0)
+  activo        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model PrintProduct {
+  id          String   @id @default(uuid())
+  nombre      String
+  descripcion String
+  categoria   String   // Banners, Vinilos, Lonas, Cartelería, Ploteos, Microperforados, Vehículos, Vidrieras, Señalética
+  imagen      String
+  galeria     String   @default("[]") // JSON string of images
+  precio      Float?
+  unidad      String?  @default("m2") // m2, unidad, metro lineal
+  medidas     String?
+  destacado   Boolean  @default(false)
+  orden       Int      @default(0)
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Budget {
+  id              String   @id @default(uuid())
+  clienteId       String?
+  cliente         Client?  @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  clienteNombre   String
+  empresa         String?
+  telefono        String?
+  whatsapp        String?
+  email           String?
+  servicio        String
+  producto        String?
+  descripcion     String
+  cantidad        Int      @default(1)
+  medidas         String?
+  archivo         String?
+  estado          String   @default("Nuevo") // Nuevo, En análisis, Presupuestado, Aprobado, Rechazado, Finalizado
+  monto           Float?   @default(0)
+  observaciones   String?
+  fecha           DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model WebSubscription {
+  id               String   @id @default(uuid())
+  clienteId        String?
+  cliente          Client?  @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  clienteNombre    String
+  sitio            String
+  dominio          String?
+  hosting          String?
+  fechaInicio      DateTime
+  fechaVencimiento DateTime
+  importe          Float
+  periodicidad     String   @default("Mensual") // Mensual, Anual
+  estado           String   @default("Activo") // Activo, Próximo a vencer, Vencido, Suspendido
+  observaciones    String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Supply {
+  id          String   @id @default(uuid())
+  nombre      String
+  categoria   String   // Tintas, Vinilos, Lonas, Estructuras, Embalaje, Otros
+  proveedor   String?
+  unidad      String   // Bobina, Litro, Metro, Unidad, Caja
+  stock       Float    @default(0)
+  stockMinimo Float    @default(5)
+  costo       Float    @default(0)
+  ubicacion   String?
+  estado      String   @default("Disponible")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  nombre      String
+  tipo        String   @default("PRODUCTO") // PRODUCTO, SERVICIO
+  categoria   String
+  descripcion String
+  precio      Float
+  costo       Float    @default(0)
+  imagen      String?
+  stock       Int      @default(0)
+  unidad      String   @default("unidad")
+  activo      Boolean  @default(true)
+  destacado   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  fecha       DateTime @default(now())
+  concepto    String
+  categoria   String   // Insumos, Servicios, Publicidad, Hosting, Software, Equipamiento, Transporte, Otros
+  proveedor   String?
+  monto       Float
+  medioPago   String   @default("Transferencia") // Efectivo, Transferencia, Tarjeta, Cheque
+  comprobante String?
+  observaciones String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Setting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  description String?
+  group       String   @default("general") // general, contacto, hero, seo, social
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Media {
+  id           String   @id @default(uuid())
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int
+  url          String
+  altText      String?
+  createdAt    DateTime @default(now())
+}
