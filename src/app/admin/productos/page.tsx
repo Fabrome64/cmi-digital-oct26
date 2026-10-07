@@ -27,7 +27,7 @@ export default function ProductsAdminPage() {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch('/api/print-products');
+      const res = await fetch('/api/print-products?all=true');
       if (res.ok) setProducts(await res.json());
     } catch (err) {
       console.error(err);
@@ -103,9 +103,13 @@ export default function ProductsAdminPage() {
         setToastMsg(`¡Operación realizada con éxito! Producto ${editingProd ? 'actualizado' : 'creado'}.`);
         setTimeout(() => setToastMsg(null), 4000);
         fetchProducts();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        alert(`Error al guardar: ${errData.error || 'No se pudo registrar el producto'}`);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      alert(`Error de conexión: ${err?.message || 'No se pudo guardar el producto'}`);
     }
   };
 
