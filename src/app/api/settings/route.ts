@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAuthSession } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
@@ -30,7 +29,7 @@ export async function GET() {
   }
 }
 
-export async function PUT(request: Request) {
+async function handleSaveSettings(request: Request) {
   try {
     const body = await request.json();
     const updates = Array.isArray(body)
@@ -68,8 +67,12 @@ export async function PUT(request: Request) {
   }
 }
 
+export async function PUT(request: Request) {
+  return handleSaveSettings(request);
+}
+
 export async function POST(request: Request) {
-  return PUT(request);
+  return handleSaveSettings(request);
 }
 
 export async function OPTIONS() {

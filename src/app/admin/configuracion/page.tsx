@@ -74,19 +74,11 @@ export default function SettingsAdminPage() {
     const apiUrl = getApiUrl('/api/settings');
 
     try {
-      let res = await fetch(apiUrl, {
-        method: 'POST',
+      const res = await fetch(getApiUrl('/api/settings'), {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),
       });
-
-      if (res.status === 405) {
-        res = await fetch(apiUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(settings),
-        });
-      }
 
       const data = await res.json();
 
