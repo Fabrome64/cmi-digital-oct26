@@ -116,9 +116,13 @@ export default function ClientsPage() {
         setToastMsg(`¡Operación realizada con éxito! Cliente ${editingClient ? 'actualizado' : 'creado'}.`);
         setTimeout(() => setToastMsg(null), 4000);
         fetchClients();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error || 'No se pudo guardar el cliente.');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      alert('Error de conexión al guardar cliente.');
     }
   };
 

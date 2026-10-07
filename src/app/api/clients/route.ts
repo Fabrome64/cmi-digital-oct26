@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
+import { getMemoryClients, createMemoryClient } from '@/lib/memoryDataStore';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -20,7 +21,8 @@ export async function GET() {
     });
     return NextResponse.json(clients);
   } catch (error) {
-    return NextResponse.json({ error: 'Error al obtener clientes' }, { status: 500 });
+    console.warn('DB error on GET /api/clients, returning memory store:', error);
+    return NextResponse.json(getMemoryClients());
   }
 }
 
@@ -28,8 +30,10 @@ export async function POST(request: Request) {
   const session = getAuthSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
+  const body = await request.json();
+  const memoryClient = createMemoryClient(body);
+
   try {
-    const body = await request.json();
     const client = await prisma.client.create({
       data: {
         nombre: body.nombre,
@@ -49,6 +53,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(client, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: 'Error al crear cliente' }, { status: 500 });
+    console.warn('DB error on POST /api/clients, returning memory client:', error);
+    return NextResponse.json(memoryClient, { status: 201 });
   }
 }

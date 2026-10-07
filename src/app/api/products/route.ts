@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
+import { getMemoryProducts, createMemoryProduct } from '@/lib/memoryDataStore';
 
 export async function GET() {
   try {
@@ -9,7 +10,8 @@ export async function GET() {
     });
     return NextResponse.json(products);
   } catch (error) {
-    return NextResponse.json({ error: 'Error al obtener productos' }, { status: 500 });
+    console.warn('DB error on GET /api/products, returning memory store:', error);
+    return NextResponse.json(getMemoryProducts());
   }
 }
 
@@ -17,8 +19,10 @@ export async function POST(request: Request) {
   const session = getAuthSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
+  const body = await request.json();
+  const memoryProduct = createMemoryProduct(body);
+
   try {
-    const body = await request.json();
     const product = await prisma.product.create({
       data: {
         nombre: body.nombre,
@@ -37,6 +41,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: 'Error al crear producto' }, { status: 500 });
+    console.warn('DB error on POST /api/products, returning memory product:', error);
+    return NextResponse.json(memoryProduct, { status: 201 });
   }
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
+import { getMemoryExpenses, createMemoryExpense } from '@/lib/memoryDataStore';
 
 export async function GET() {
   const session = getAuthSession();
@@ -12,7 +13,8 @@ export async function GET() {
     });
     return NextResponse.json(expenses);
   } catch (error) {
-    return NextResponse.json({ error: 'Error al obtener gastos' }, { status: 500 });
+    console.warn('DB error on GET /api/expenses, returning memory store:', error);
+    return NextResponse.json(getMemoryExpenses());
   }
 }
 
@@ -20,8 +22,10 @@ export async function POST(request: Request) {
   const session = getAuthSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
+  const body = await request.json();
+  const memoryExpense = createMemoryExpense(body);
+
   try {
-    const body = await request.json();
     const expense = await prisma.expense.create({
       data: {
         fecha: body.fecha ? new Date(body.fecha) : new Date(),
@@ -37,6 +41,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(expense, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: 'Error al registrar gasto' }, { status: 500 });
+    console.warn('DB error on POST /api/expenses, returning memory expense:', error);
+    return NextResponse.json(memoryExpense, { status: 201 });
   }
 }

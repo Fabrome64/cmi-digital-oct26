@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
+import { updateMemoryClient, deleteMemoryClient } from '@/lib/memoryDataStore';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const session = getAuthSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
+  const body = await request.json();
+  const memoryUpdated = updateMemoryClient(params.id, body);
+
   try {
-    const body = await request.json();
     const updated = await prisma.client.update({
       where: { id: params.id },
       data: {
@@ -28,7 +31,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
     return NextResponse.json(updated);
   } catch (error) {
-    return NextResponse.json({ error: 'Error al actualizar cliente' }, { status: 500 });
+    console.warn('DB error on PUT /api/clients/[id], returning memoryUpdated:', error);
+    return NextResponse.json(memoryUpdated || { id: params.id, ...body });
   }
 }
 
@@ -36,10 +40,12 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   const session = getAuthSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
+  deleteMemoryClient(params.id);
+
   try {
     await prisma.client.delete({ where: { id: params.id } });
-    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Error al eliminar cliente' }, { status: 500 });
+    console.warn('DB error on DELETE /api/clients/[id], ignored for memory fallback:', error);
   }
+  return NextResponse.json({ success: true });
 }

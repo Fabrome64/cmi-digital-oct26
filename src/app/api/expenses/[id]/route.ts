@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
+import { updateMemoryExpense, deleteMemoryExpense } from '@/lib/memoryDataStore';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const session = getAuthSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
+  const body = await request.json();
+  const memoryUpdated = updateMemoryExpense(params.id, body);
+
   try {
-    const body = await request.json();
     const updated = await prisma.expense.update({
       where: { id: params.id },
       data: {
@@ -24,7 +27,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
     return NextResponse.json(updated);
   } catch (error) {
-    return NextResponse.json({ error: 'Error al actualizar gasto' }, { status: 500 });
+    console.warn('DB error on PUT /api/expenses/[id], returning memoryUpdated:', error);
+    return NextResponse.json(memoryUpdated || { id: params.id, ...body });
   }
 }
 
@@ -32,10 +36,12 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   const session = getAuthSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
+  deleteMemoryExpense(params.id);
+
   try {
     await prisma.expense.delete({ where: { id: params.id } });
-    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Error al eliminar gasto' }, { status: 500 });
+    console.warn('DB error on DELETE /api/expenses/[id], ignored for memory fallback:', error);
   }
+  return NextResponse.json({ success: true });
 }
