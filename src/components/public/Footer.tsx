@@ -15,11 +15,11 @@ interface FooterProps {
 export default function Footer({
   companyName = 'CMI DIGITAL',
   address = 'Paraná 19, San José de Feliciano, Entre Ríos, Argentina',
-  phone = '03437-421589',
-  whatsapp = '5493437421589',
-  email = 'contacto@cmidigital.com.ar',
-  facebookUrl = 'https://facebook.com',
-  instagramUrl = 'https://instagram.com',
+  phone = '03458-659792',
+  whatsapp = '5493458659792',
+  email = 'fabrome64@gmail.com',
+  facebookUrl = 'https://web.facebook.com/profile.php?id=100091974249919&_rdc=2&_rdr#',
+  instagramUrl = 'https://www.instagram.com/cmidigital/',
 }: FooterProps) {
   const currentYear = new Date().getFullYear();
   const waUrl = getWhatsAppUrl(whatsapp, 'GENERAL');

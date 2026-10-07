@@ -28,12 +28,12 @@ export default async function HomePage() {
   const heroTitle = settings.hero_title || 'CMI DIGITAL';
   const heroSubtitle = settings.hero_subtitle || 'Soluciones que hacen visible tu negocio.';
   const heroText = settings.hero_text || 'Impresiones, marketing digital y desarrollo web para llevar tu empresa al próximo nivel.';
-  const whatsapp = settings.whatsapp || '5493437421589';
+  const whatsapp = settings.whatsapp || '5493458659792';
   const address = settings.address || 'Paraná 19, San José de Feliciano, Entre Ríos, Argentina';
-  const phone = settings.phone || '03437-421589';
-  const email = settings.email || 'contacto@cmidigital.com.ar';
-  const facebookUrl = settings.facebook_url || 'https://facebook.com';
-  const instagramUrl = settings.instagram_url || 'https://instagram.com';
+  const phone = settings.phone || '03458-659792';
+  const email = settings.email || 'fabrome64@gmail.com';
+  const facebookUrl = settings.facebook_url || 'https://web.facebook.com/profile.php?id=100091974249919&_rdc=2&_rdr#';
+  const instagramUrl = settings.instagram_url || 'https://www.instagram.com/cmidigital/';
   const googleMapsIframe = settings.google_maps_iframe;
 
   return (

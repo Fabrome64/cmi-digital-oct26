@@ -14,7 +14,7 @@ export default function Hero({
   title = 'CMI DIGITAL',
   subtitle = 'Soluciones que hacen visible tu negocio.',
   text = 'Impresiones, marketing digital y desarrollo web para llevar tu empresa al próximo nivel.',
-  whatsapp = '5493437421589',
+  whatsapp = '5493458659792',
 }: HeroProps) {
   const waUrl = getWhatsAppUrl(whatsapp, 'GENERAL');
 

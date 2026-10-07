@@ -12,8 +12,8 @@ interface HeaderProps {
 
 export default function Header({
   companyName = 'CMI DIGITAL',
-  facebookUrl = 'https://facebook.com',
-  instagramUrl = 'https://instagram.com',
+  facebookUrl = 'https://web.facebook.com/profile.php?id=100091974249919&_rdc=2&_rdr#',
+  instagramUrl = 'https://www.instagram.com/cmidigital/',
 }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
