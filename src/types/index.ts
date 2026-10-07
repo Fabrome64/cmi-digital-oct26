@@ -103,6 +103,18 @@ export interface WebSubscriptionType {
   updatedAt: Date | string;
 }
 
+export interface IncomeType {
+  id: string;
+  clienteId?: string | null;
+  clienteNombre: string;
+  servicio: string; // SITIO WEB, MARKETING REDES, AUSPICIO FELICHOGUIA, IMPRENTA GRAFICA, IMPRENTA GRAN FORMATO
+  fecha: Date | string;
+  importe: number;
+  observaciones?: string | null;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
 export interface SupplyType {
   id: string;
   nombre: string;

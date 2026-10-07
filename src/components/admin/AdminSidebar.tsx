@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import {
-  LayoutDashboard, Users, CreditCard, Box, Package, DollarSign,
+  LayoutDashboard, Users, CreditCard, Box, Package, DollarSign, Wallet,
   FolderKanban, Share2, FileText, Image as ImageIcon, Settings, LogOut,
   ExternalLink, Menu, X, ShieldAlert
 } from 'lucide-react';
@@ -17,13 +17,12 @@ export default function AdminSidebar() {
   const menuItems = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Clientes', href: '/admin/clientes', icon: Users },
-    { name: 'Abonos Web', href: '/admin/abonos', icon: CreditCard },
+    { name: 'Ingresos', href: '/admin/ingresos', icon: Wallet },
+    { name: 'Gastos', href: '/admin/gastos', icon: DollarSign },
     { name: 'Insumos', href: '/admin/insumos', icon: Box },
     { name: 'Productos', href: '/admin/productos', icon: Package },
-    { name: 'Gastos', href: '/admin/gastos', icon: DollarSign },
     { name: 'Portfolio Web', href: '/admin/portfolio', icon: FolderKanban },
     { name: 'Servicios Marketing', href: '/admin/servicios', icon: Share2 },
-    { name: 'Presupuestos', href: '/admin/presupuestos', icon: FileText },
     { name: 'Medios / Imágenes', href: '/admin/medios', icon: ImageIcon },
     { name: 'Configuración', href: '/admin/configuracion', icon: Settings },
   ];

@@ -5,9 +5,8 @@ import {
   getMemoryProducts,
   getMemoryExpenses,
   getMemorySupplies,
-  getMemoryBudgets,
-  getMemorySubscriptions,
-  getMemoryPortfolio
+  getMemoryPortfolio,
+  getMemoryIncomes
 } from '@/lib/memoryDataStore';
 
 export const dynamic = 'force-dynamic';
@@ -17,14 +16,12 @@ export async function GET() {
   try {
     let clientsCount = 0;
     let activeWebsitesCount = 0;
-    let pendingSubscriptionsCount = 0;
-    let newBudgetsCount = 0;
     let totalProductsCount = 0;
+    let monthlyIncomesTotal = 0;
     let monthlyExpensesTotal = 0;
     let lowStockSupplies: any[] = [];
-    let budgetsByStatus: { name: string; value: number }[] = [];
+    let incomesByService: { name: string; total: number }[] = [];
     let expensesByCategory: { name: string; total: number }[] = [];
-    let subscriptionsByStatus: { name: string; value: number }[] = [];
 
     // 1. Clients
     try {
@@ -40,25 +37,7 @@ export async function GET() {
       activeWebsitesCount = getMemoryPortfolio().filter((p: any) => p.activo).length;
     }
 
-    // 3. Subscriptions
-    try {
-      pendingSubscriptionsCount = await prisma.webSubscription.count({
-        where: { estado: { in: ['Próximo a vencer', 'Vencido'] } },
-      });
-    } catch {
-      pendingSubscriptionsCount = getMemorySubscriptions().filter(
-        (s: any) => s.estado === 'Próximo a vencer' || s.estado === 'Vencido'
-      ).length;
-    }
-
-    // 4. Budgets
-    try {
-      newBudgetsCount = await prisma.budget.count({ where: { estado: 'Nuevo' } });
-    } catch {
-      newBudgetsCount = getMemoryBudgets().filter((b: any) => b.estado === 'Nuevo').length;
-    }
-
-    // 5. Products
+    // 3. Products
     try {
       const printProdCount = await prisma.printProduct.count({ where: { activo: true } });
       const prodCount = await prisma.product.count({ where: { activo: true } });
@@ -67,23 +46,50 @@ export async function GET() {
       totalProductsCount = getMemoryProducts().filter((p: any) => p.activo !== false).length;
     }
 
-    // 6. Monthly Expenses
-    try {
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0);
+    // 4. Incomes of current month
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
 
+    try {
+      const monthlyIncomesGroup = await prisma.income.aggregate({
+        where: { fecha: { gte: startOfMonth } },
+        _sum: { importe: true },
+      });
+      monthlyIncomesTotal = monthlyIncomesGroup._sum.importe || 0;
+
+      // Fallback to all time if current month has 0 records but database has records
+      if (monthlyIncomesTotal === 0) {
+        const allIncomesGroup = await prisma.income.aggregate({
+          _sum: { importe: true },
+        });
+        monthlyIncomesTotal = allIncomesGroup._sum.importe || 0;
+      }
+    } catch {
+      const memIncomes = getMemoryIncomes();
+      monthlyIncomesTotal = memIncomes.reduce((sum: number, i: any) => sum + (Number(i.importe) || 0), 0);
+    }
+
+    // 5. Monthly Expenses
+    try {
       const monthlyExpensesGroup = await prisma.expense.aggregate({
         where: { fecha: { gte: startOfMonth } },
         _sum: { monto: true },
       });
       monthlyExpensesTotal = monthlyExpensesGroup._sum.monto || 0;
+
+      if (monthlyExpensesTotal === 0) {
+        const allExpensesGroup = await prisma.expense.aggregate({
+          _sum: { monto: true },
+        });
+        monthlyExpensesTotal = allExpensesGroup._sum.monto || 0;
+      }
     } catch {
       const memExpenses = getMemoryExpenses();
       monthlyExpensesTotal = memExpenses.reduce((sum: number, e: any) => sum + (Number(e.monto) || 0), 0);
     }
 
-    // 7. Low stock supplies
+    // 6. Low stock supplies
     try {
       lowStockSupplies = await prisma.supply.findMany({
         where: { estado: 'Bajo Stock' },
@@ -92,17 +98,24 @@ export async function GET() {
       lowStockSupplies = getMemorySupplies().filter((s: any) => s.estado === 'Bajo Stock');
     }
 
-    // 8. Charts
+    // 7. Chart: Ingresos por Servicio
     try {
-      const bGroupBy = await prisma.budget.groupBy({
-        by: ['estado'],
-        _count: { id: true },
+      const iGroupBy = await prisma.income.groupBy({
+        by: ['servicio'],
+        _sum: { importe: true },
       });
-      budgetsByStatus = bGroupBy.map((b) => ({ name: b.estado, value: b._count.id }));
+      incomesByService = iGroupBy.map((i) => ({ name: i.servicio, total: i._sum.importe || 0 }));
     } catch {
-      budgetsByStatus = [];
+      const memIncomes = getMemoryIncomes();
+      const grouped: Record<string, number> = {};
+      memIncomes.forEach((i: any) => {
+        const srv = i.servicio || 'SITIO WEB';
+        grouped[srv] = (grouped[srv] || 0) + (Number(i.importe) || 0);
+      });
+      incomesByService = Object.entries(grouped).map(([name, total]) => ({ name, total }));
     }
 
+    // 8. Chart: Gastos por Categoría
     try {
       const eGroupBy = await prisma.expense.groupBy({
         by: ['categoria'],
@@ -110,33 +123,28 @@ export async function GET() {
       });
       expensesByCategory = eGroupBy.map((e) => ({ name: e.categoria, total: e._sum.monto || 0 }));
     } catch {
-      expensesByCategory = [];
-    }
-
-    try {
-      const sGroupBy = await prisma.webSubscription.groupBy({
-        by: ['estado'],
-        _count: { id: true },
+      const memExpenses = getMemoryExpenses();
+      const grouped: Record<string, number> = {};
+      memExpenses.forEach((e: any) => {
+        const cat = e.categoria || 'Otros';
+        grouped[cat] = (grouped[cat] || 0) + (Number(e.monto) || 0);
       });
-      subscriptionsByStatus = sGroupBy.map((s) => ({ name: s.estado, value: s._count.id }));
-    } catch {
-      subscriptionsByStatus = [];
+      expensesByCategory = Object.entries(grouped).map(([name, total]) => ({ name, total }));
     }
 
     return NextResponse.json({
       kpis: {
         clientsCount,
         activeWebsitesCount,
-        pendingSubscriptionsCount,
-        newBudgetsCount,
         totalProductsCount,
+        monthlyIncomesTotal,
         monthlyExpensesTotal,
+        netBalance: monthlyIncomesTotal - monthlyExpensesTotal,
         lowStockAlertsCount: lowStockSupplies.length,
       },
       charts: {
-        budgetsByStatus,
+        incomesByService,
         expensesByCategory,
-        subscriptionsByStatus,
       },
       lowStockSupplies,
     }, {
@@ -144,21 +152,19 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error fetching dashboard stats:', error);
-    // Return clean zero metrics fallback when DB is completely empty
     return NextResponse.json({
       kpis: {
         clientsCount: 0,
         activeWebsitesCount: 0,
-        pendingSubscriptionsCount: 0,
-        newBudgetsCount: 0,
         totalProductsCount: 0,
+        monthlyIncomesTotal: 0,
         monthlyExpensesTotal: 0,
+        netBalance: 0,
         lowStockAlertsCount: 0,
       },
       charts: {
-        budgetsByStatus: [],
+        incomesByService: [],
         expensesByCategory: [],
-        subscriptionsByStatus: [],
       },
       lowStockSupplies: [],
     }, {

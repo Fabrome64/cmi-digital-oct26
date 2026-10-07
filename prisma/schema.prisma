@@ -36,6 +36,7 @@ model Client {
   updatedAt     DateTime          @updatedAt
   budgets       Budget[]
   subscriptions WebSubscription[]
+  incomes       Income[]
 }
 
 model WebPortfolio {
@@ -125,6 +126,19 @@ model WebSubscription {
   observaciones    String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+}
+
+model Income {
+  id            String   @id @default(uuid())
+  clienteId     String?
+  cliente       Client?  @relation(fields: [clienteId], references: [id], onDelete: SetNull)
+  clienteNombre String
+  servicio      String   // SITIO WEB, MARKETING REDES, AUSPICIO FELICHOGUIA, IMPRENTA GRAFICA, IMPRENTA GRAN FORMATO
+  fecha         DateTime @default(now())
+  importe       Float
+  observaciones String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Supply {

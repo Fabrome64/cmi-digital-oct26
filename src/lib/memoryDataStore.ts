@@ -260,6 +260,38 @@ export function deleteMemoryPortfolio(id: string) {
   return true;
 }
 
+// 8. INCOMES STORE
+let memoryIncomes: any[] = loadData('cmi_incomes.json', []);
+
+export function getMemoryIncomes() {
+  memoryIncomes = loadData('cmi_incomes.json', memoryIncomes);
+  return [...memoryIncomes];
+}
+
+export function createMemoryIncome(data: any) {
+  const item = {
+    id: `inc-${Date.now()}`,
+    ...data,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  memoryIncomes = [item, ...memoryIncomes];
+  saveData('cmi_incomes.json', memoryIncomes);
+  return item;
+}
+
+export function updateMemoryIncome(id: string, data: any) {
+  memoryIncomes = memoryIncomes.map((i) => (i.id === id ? { ...i, ...data, updatedAt: new Date().toISOString() } : i));
+  saveData('cmi_incomes.json', memoryIncomes);
+  return memoryIncomes.find((i) => i.id === id);
+}
+
+export function deleteMemoryIncome(id: string) {
+  memoryIncomes = memoryIncomes.filter((i) => i.id !== id);
+  saveData('cmi_incomes.json', memoryIncomes);
+  return true;
+}
+
 export function clearAllMemoryStores() {
   memoryClients = [];
   saveData('cmi_clients.json', []);
@@ -275,5 +307,7 @@ export function clearAllMemoryStores() {
   saveData('cmi_web_subscriptions.json', []);
   memoryPortfolio = [];
   saveData('cmi_portfolio.json', []);
+  memoryIncomes = [];
+  saveData('cmi_incomes.json', []);
 }
 
