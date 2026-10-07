@@ -34,10 +34,18 @@ export default function SettingsAdminPage() {
   const [credSaving, setCredSaving] = useState(false);
   const [credError, setCredError] = useState('');
 
+  const getApiUrl = (path: string) => {
+    if (typeof window !== 'undefined' && window.location.hostname.includes('www.')) {
+      const apexHost = window.location.hostname.replace(/^www\./, '');
+      return `${window.location.protocol}//${apexHost}${path}`;
+    }
+    return path;
+  };
+
   useEffect(() => {
     async function loadSettings() {
       try {
-        const res = await fetch('/api/settings');
+        const res = await fetch(getApiUrl('/api/settings'));
         if (res.ok) {
           const data = await res.json();
           if (data.map) {
@@ -63,15 +71,17 @@ export default function SettingsAdminPage() {
     setSuccessBanner(null);
     setErrorBanner(null);
 
+    const apiUrl = getApiUrl('/api/settings');
+
     try {
-      let res = await fetch('/api/settings', {
+      let res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),
       });
 
       if (res.status === 405) {
-        res = await fetch('/api/settings', {
+        res = await fetch(apiUrl, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(settings),

@@ -6,6 +6,13 @@ import { revalidatePath } from 'next/cache';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+const corsHeaders = {
+  'Cache-Control': 'no-store, max-age=0',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
 export async function GET() {
   try {
     const settingsList = await prisma.setting.findMany();
@@ -16,10 +23,10 @@ export async function GET() {
 
     return NextResponse.json(
       { map: settingsMap, raw: settingsList },
-      { headers: { 'Cache-Control': 'no-store, max-age=0' } }
+      { headers: corsHeaders }
     );
   } catch (error) {
-    return NextResponse.json({ error: 'Error al obtener configuraciones' }, { status: 500 });
+    return NextResponse.json({ error: 'Error al obtener configuraciones' }, { status: 500, headers: corsHeaders });
   }
 }
 
@@ -53,11 +60,11 @@ export async function PUT(request: Request) {
 
     return NextResponse.json(
       { success: true, message: '¡Configuración guardada exitosamente!', map: settingsMap },
-      { headers: { 'Cache-Control': 'no-store, max-age=0' } }
+      { headers: corsHeaders }
     );
   } catch (error: any) {
     console.error('Error updating settings:', error);
-    return NextResponse.json({ error: error?.message || 'Error al guardar configuraciones' }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'Error al guardar configuraciones' }, { status: 500, headers: corsHeaders });
   }
 }
 
@@ -68,11 +75,6 @@ export async function POST(request: Request) {
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
-    headers: {
-      'Allow': 'GET, POST, PUT, OPTIONS',
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
+    headers: corsHeaders,
   });
 }
