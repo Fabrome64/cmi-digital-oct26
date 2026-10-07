@@ -69,9 +69,9 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
         </div>
 
         {/* TWO COLUMNS PRESENTATION */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-20">
           
-          {/* Left Column: Commercial Text & CTAs */}
+          {/* Left Column: Commercial Text & CTAs & Client Logos */}
           <div className="lg:col-span-5 space-y-6">
             <h3 className="text-3xl font-extrabold text-gray-900 leading-snug">
               Administramos, diseñamos y planificamos contenido para que tu marca destaque.
@@ -80,7 +80,7 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
               No dejes tus redes inactivas. Desarrollamos una estrategia integral para atraer clientes locales en San José de Feliciano y la región, con piezas publicitarias creativas, gestión de mensajes y campañas de anuncios de alto retorno.
             </p>
 
-            <div className="pt-4 flex flex-col sm:flex-row gap-4">
+            <div className="pt-2 flex flex-col sm:flex-row gap-4">
               <a
                 href={waUrl}
                 target="_blank"
@@ -98,6 +98,71 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
                 <span>VER SERVICIOS</span>
               </a>
             </div>
+
+            {/* MARCAS CLIENTES DESTACADAS */}
+            <div className="pt-6 border-t border-cyan-200/80 mt-8 space-y-3">
+              <div className="flex items-center space-x-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#00BCD4] animate-pulse"></span>
+                <h4 className="text-xs font-extrabold text-gray-700 uppercase tracking-wider">
+                  MARCAS QUE CONFÍAN EN NOSOTROS
+                </h4>
+              </div>
+
+              <div className="grid grid-cols-4 gap-2.5">
+                {/* Logo 1: San José Negocios Inmobiliarios */}
+                <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
+                  <img
+                    src="/clients/san-jose-inmobiliaria.jpg"
+                    alt="San José Negocios Inmobiliarios"
+                    className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
+                    title="San José Negocios Inmobiliarios"
+                  />
+                </div>
+
+                {/* Logo 2: PC Store */}
+                <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
+                  <img
+                    src="/clients/pc-store.png"
+                    alt="PC Store"
+                    className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
+                    title="PC Store"
+                  />
+                </div>
+
+                {/* Logo 3: LM Quiropraxia */}
+                <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
+                  <img
+                    src="/clients/lm-quiropraxia.jpg"
+                    alt="LM Quiropraxia"
+                    className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
+                    title="LM Quiropraxia"
+                  />
+                </div>
+
+                {/* Logo 4: Elizabeth González Inmobiliaria */}
+                <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
+                  <img
+                    src="/clients/elizabeth-gonzalez-inmobiliaria.jpg"
+                    alt="Elizabeth González Inmobiliaria"
+                    className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
+                    title="Elizabeth González Inmobiliaria"
+                  />
+                </div>
+
+                {/* 4 Espacios reservados para futuras marcas */}
+                {[1, 2, 3, 4].map((slot) => (
+                  <div
+                    key={slot}
+                    className="h-16 rounded-xl border border-dashed border-cyan-200/80 bg-white/60 flex flex-col items-center justify-center text-center p-1 group hover:border-[#00BCD4] hover:bg-cyan-50/50 transition-all cursor-pointer"
+                  >
+                    <span className="text-[10px] font-bold text-[#00ACC1]/70 group-hover:text-[#00BCD4] transition-colors">
+                      + Tu Marca
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
           </div>
 
           {/* Right Column: 12 Advantage Boxes Grid */}
@@ -170,7 +235,7 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
                       href={getWhatsAppUrl(whatsapp, 'MARKETING', `Hola CMI Digital, me interesa consultar por el servicio: ${svc.titulo}`)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center space-x-2 bg-[#00BCD4] hover:bg-[#00ACC1] text-white font-bold py-2.5 rounded-xl transition-colors text-sm"
+                      className="w-full inline-flex items-center justify-center space-x-2 bg-[#00BCD4] hover:bg-[#00ACC1] text-[#ffffff] font-bold py-2.5 rounded-xl transition-colors text-sm"
                     >
                       <MessageCircle className="w-4 h-4" />
                       <span>CONSULTAR</span>
