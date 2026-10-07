@@ -13,11 +13,15 @@ export const revalidate = 0; // Dynamic SSR to ensure Instant DB Sync (Requisito
 
 export default async function HomePage() {
   // Fetch global settings dynamically from database
-  const settingsList = await prisma.setting.findMany();
   const settings: Record<string, string> = {};
-  settingsList.forEach((s) => {
-    settings[s.key] = s.value;
-  });
+  try {
+    const settingsList = await prisma.setting.findMany();
+    settingsList.forEach((s) => {
+      settings[s.key] = s.value;
+    });
+  } catch (err) {
+    console.error('Error fetching settings from Prisma:', err);
+  }
 
   const companyName = settings.company_name || 'CMI DIGITAL';
   const heroTitle = settings.hero_title || 'CMI DIGITAL';
