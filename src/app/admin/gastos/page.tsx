@@ -100,9 +100,13 @@ export default function ExpensesPage() {
         setToastMsg(`¡Operación realizada con éxito! Gasto ${editingExp ? 'actualizado' : 'registrado'}.`);
         setTimeout(() => setToastMsg(null), 4000);
         fetchExpenses();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        alert(`Error al guardar: ${errData.error || 'No se pudo registrar el gasto'}`);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      alert(`Error de conexión: ${err?.message || 'No se pudo guardar el gasto'}`);
     }
   };
 
