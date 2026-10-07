@@ -149,17 +149,42 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
                   />
                 </div>
 
-                {/* 4 Espacios reservados para futuras marcas */}
-                {[1, 2, 3, 4].map((slot) => (
-                  <div
-                    key={slot}
-                    className="h-16 rounded-xl border border-dashed border-cyan-200/80 bg-white/60 flex flex-col items-center justify-center text-center p-1 group hover:border-[#00BCD4] hover:bg-cyan-50/50 transition-all cursor-pointer"
-                  >
-                    <span className="text-[10px] font-bold text-[#00ACC1]/70 group-hover:text-[#00BCD4] transition-colors">
-                      + Tu Marca
-                    </span>
-                  </div>
-                ))}
+                {/* Logo 5: San José */}
+                <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
+                  <img
+                    src="/clients/sj-supermercado.jpg"
+                    alt="San José Comercial"
+                    className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
+                    title="San José Comercial"
+                  />
+                </div>
+
+                {/* Logo 6: Marca T */}
+                <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
+                  <img
+                    src="/clients/t-logo.jpg"
+                    alt="Marca T"
+                    className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
+                    title="Marca T"
+                  />
+                </div>
+
+                {/* Logo 7: Laboratorio & Análisis P */}
+                <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
+                  <img
+                    src="/clients/laboratorio-p.png"
+                    alt="Laboratorio & Análisis Clínicos"
+                    className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
+                    title="Laboratorio & Análisis Clínicos"
+                  />
+                </div>
+
+                {/* Slot 8: Reservado para futura marca */}
+                <div className="h-16 rounded-xl border border-dashed border-cyan-200/80 bg-white/60 flex flex-col items-center justify-center text-center p-1 group hover:border-[#00BCD4] hover:bg-cyan-50/50 transition-all cursor-pointer">
+                  <span className="text-[10px] font-bold text-[#00ACC1]/70 group-hover:text-[#00BCD4] transition-colors">
+                    + Tu Marca
+                  </span>
+                </div>
               </div>
             </div>
 
