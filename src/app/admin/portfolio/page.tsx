@@ -28,7 +28,7 @@ export default function PortfolioAdminPage() {
 
   const fetchPortfolio = async () => {
     try {
-      const res = await fetch('/api/portfolio');
+      const res = await fetch('/api/portfolio?all=true');
       if (res.ok) setPortfolio(await res.json());
     } catch (err) {
       console.error(err);
@@ -106,9 +106,13 @@ export default function PortfolioAdminPage() {
         setToastMsg(`¡Operación realizada con éxito! Proyecto ${editingItem ? 'actualizado' : 'creado'}.`);
         setTimeout(() => setToastMsg(null), 4000);
         fetchPortfolio();
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        alert(`Error al guardar: ${errData.error || 'No se pudo registrar el proyecto'}`);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      alert(`Error de conexión: ${err?.message || 'No se pudo guardar'}`);
     }
   };
 

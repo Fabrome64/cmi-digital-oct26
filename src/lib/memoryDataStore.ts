@@ -228,6 +228,38 @@ export function deleteMemorySubscription(id: string) {
   return true;
 }
 
+// 7. WEB PORTFOLIO STORE
+let memoryPortfolio: any[] = loadData('cmi_portfolio.json', []);
+
+export function getMemoryPortfolio() {
+  memoryPortfolio = loadData('cmi_portfolio.json', memoryPortfolio);
+  return [...memoryPortfolio];
+}
+
+export function createMemoryPortfolio(data: any) {
+  const item = {
+    id: `port-${Date.now()}`,
+    ...data,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  memoryPortfolio = [item, ...memoryPortfolio];
+  saveData('cmi_portfolio.json', memoryPortfolio);
+  return item;
+}
+
+export function updateMemoryPortfolio(id: string, data: any) {
+  memoryPortfolio = memoryPortfolio.map((p) => (p.id === id ? { ...p, ...data, updatedAt: new Date().toISOString() } : p));
+  saveData('cmi_portfolio.json', memoryPortfolio);
+  return memoryPortfolio.find((p) => p.id === id);
+}
+
+export function deleteMemoryPortfolio(id: string) {
+  memoryPortfolio = memoryPortfolio.filter((p) => p.id !== id);
+  saveData('cmi_portfolio.json', memoryPortfolio);
+  return true;
+}
+
 export function clearAllMemoryStores() {
   memoryClients = [];
   saveData('cmi_clients.json', []);
@@ -241,4 +273,7 @@ export function clearAllMemoryStores() {
   saveData('cmi_budgets.json', []);
   memorySubscriptions = [];
   saveData('cmi_web_subscriptions.json', []);
+  memoryPortfolio = [];
+  saveData('cmi_portfolio.json', []);
 }
+
