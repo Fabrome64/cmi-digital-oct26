@@ -7,7 +7,16 @@ const globalForPrisma = globalThis as unknown as {
 function getDatabaseUrl(): string | undefined {
   const envUrl = process.env.DATABASE_URL;
   const directUrl = process.env.DIRECT_URL;
-  const postgresUrl = process.env.POSTGRES_PRISMA_URL || process.env.POSTGRES_URL || process.env.POSTGRES_URL_NON_POOLING;
+  
+  // Check Vercel Postgres variations (default and custom prefixes like postgres_)
+  const postgresUrl =
+    process.env.postgres_PRISMA_DATABASE_URL ||
+    process.env.postgres_POSTGRES_URL ||
+    process.env.postgres_DATABASE_URL ||
+    process.env.POSTGRES_PRISMA_URL ||
+    process.env.POSTGRES_URL ||
+    process.env.POSTGRES_URL_NON_POOLING ||
+    process.env.POSTGRES_DATABASE_URL;
 
   if (postgresUrl && (!envUrl || envUrl.startsWith('file:'))) {
     return postgresUrl;
