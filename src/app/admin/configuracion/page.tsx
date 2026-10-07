@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, Save, CheckCircle2, Globe, MapPin, Share2, Search, Sparkles } from 'lucide-react';
+import { Settings, Save, CheckCircle2, Globe, MapPin, Share2, Search, Sparkles, Lock, Key, ShieldCheck, AlertCircle } from 'lucide-react';
+import SuccessToast from '@/components/admin/SuccessToast';
 
 export default function SettingsAdminPage() {
   const [settings, setSettings] = useState<Record<string, string>>({
@@ -22,7 +23,14 @@ export default function SettingsAdminPage() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [savedSuccess, setSavedSuccess] = useState(false);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
+
+  // Admin Credentials Form State
+  const [adminEmail, setAdminEmail] = useState('admin@cmidigital.com');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [credSaving, setCredSaving] = useState(false);
+  const [credError, setCredError] = useState('');
 
   useEffect(() => {
     async function loadSettings() {
@@ -50,7 +58,6 @@ export default function SettingsAdminPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setSavedSuccess(false);
 
     try {
       const res = await fetch('/api/settings', {
@@ -60,13 +67,50 @@ export default function SettingsAdminPage() {
       });
 
       if (res.ok) {
-        setSavedSuccess(true);
-        setTimeout(() => setSavedSuccess(false), 4000);
+        setToastMsg('¡Configuración global guardada exitosamente!');
+        setTimeout(() => setToastMsg(null), 4000);
       }
     } catch (err) {
       console.error(err);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleUpdateCredentials = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCredError('');
+
+    if (!currentPassword) {
+      setCredError('Ingresá tu contraseña actual para confirmar los cambios.');
+      return;
+    }
+
+    setCredSaving(true);
+    try {
+      const res = await fetch('/api/auth/change-credentials', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: adminEmail,
+          currentPassword,
+          newPassword,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Error al actualizar credenciales');
+      }
+
+      setToastMsg('¡Credenciales de acceso actualizadas con éxito!');
+      setCurrentPassword('');
+      setNewPassword('');
+      setTimeout(() => setToastMsg(null), 4000);
+    } catch (err: any) {
+      setCredError(err.message);
+    } finally {
+      setCredSaving(false);
     }
   };
 
@@ -77,20 +121,82 @@ export default function SettingsAdminPage() {
   return (
     <div className="space-y-6 font-poppins max-w-4xl">
       
+      {toastMsg && (
+        <SuccessToast message={toastMsg} onClose={() => setToastMsg(null)} />
+      )}
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-extrabold text-gray-900">Configuración Global del Sitio</h2>
-          <p className="text-sm text-gray-500">Modifica datos de la empresa, redes, WhatsApp, SEO y Google Maps sin tocar código</p>
+          <p className="text-sm text-gray-500">Modificá datos de la empresa, redes, WhatsApp, SEO, Google Maps y tus credenciales de acceso</p>
         </div>
-
-        {savedSuccess && (
-          <div className="flex items-center space-x-2 bg-green-100 text-green-800 px-4 py-2 rounded-xl text-xs font-bold border border-green-300">
-            <CheckCircle2 className="w-4 h-4 text-green-600" />
-            <span>Configuración guardada</span>
-          </div>
-        )}
       </div>
 
+      {/* SECURITY & ADMIN CREDENTIALS SECTION */}
+      <div className="bg-gray-900 text-white p-6 sm:p-8 rounded-3xl border border-gray-800 shadow-xl space-y-4">
+        <h3 className="text-lg font-extrabold text-white flex items-center space-x-2 border-b border-gray-800 pb-3">
+          <ShieldCheck className="w-5 h-5 text-[#FFD400]" />
+          <span>Seguridad & Credenciales de Ingreso al Panel</span>
+        </h3>
+
+        <p className="text-xs text-gray-400">
+          Personalizá tu correo electrónico y clave de acceso para proteger el panel privado contra cualquier ingreso no autorizado.
+        </p>
+
+        {credError && (
+          <div className="bg-red-900/80 border border-red-500 p-3 rounded-xl flex items-center space-x-2 text-xs text-red-200">
+            <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+            <span>{credError}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleUpdateCredentials} className="space-y-4 pt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-gray-300 uppercase mb-1">Email de Acceso *</label>
+              <input
+                type="email"
+                required
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
+                className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#FFD400]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-300 uppercase mb-1">Contraseña Actual *</label>
+              <input
+                type="password"
+                required
+                placeholder="••••••••"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#FFD400]"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-gray-300 uppercase mb-1">Nueva Contraseña (opcional)</label>
+              <input
+                type="password"
+                placeholder="Nueva clave deseada"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-[#FFD400]"
+              />
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            disabled={credSaving}
+            className="inline-flex items-center space-x-2 bg-[#FFD400] hover:bg-yellow-400 text-gray-900 font-extrabold px-6 py-3 rounded-xl text-xs shadow transition-transform transform hover:-translate-y-0.5 disabled:opacity-50"
+          >
+            <Key className="w-4 h-4 text-gray-900" />
+            <span>{credSaving ? 'ACTUALIZANDO...' : 'ACTUALIZAR CREDENCIALES DE ACCESO'}</span>
+          </button>
+        </form>
+      </div>
+
+      {/* GLOBAL SETTINGS FORM */}
       <form onSubmit={handleSubmit} className="space-y-8">
         
         {/* HERO SECTION CONFIG */}
