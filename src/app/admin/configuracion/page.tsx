@@ -64,11 +64,19 @@ export default function SettingsAdminPage() {
     setErrorBanner(null);
 
     try {
-      const res = await fetch('/api/settings', {
-        method: 'PUT',
+      let res = await fetch('/api/settings', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings),
       });
+
+      if (res.status === 405) {
+        res = await fetch('/api/settings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(settings),
+        });
+      }
 
       const data = await res.json();
 
