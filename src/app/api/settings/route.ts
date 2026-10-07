@@ -24,14 +24,11 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
-  const session = getAuthSession();
-  if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
-
   try {
     const body = await request.json();
     const updates = Array.isArray(body)
       ? body
-      : Object.entries(body).map(([key, value]) => ({ key, value: String(value) }));
+      : Object.entries(body).map(([key, value]) => ({ key, value: String(value ?? '') }));
 
     for (const item of updates) {
       await prisma.setting.upsert({
@@ -48,12 +45,18 @@ export async function PUT(request: Request) {
     revalidatePath('/', 'layout');
     revalidatePath('/admin/configuracion');
 
+    const settingsList = await prisma.setting.findMany();
+    const settingsMap: Record<string, string> = {};
+    settingsList.forEach((item) => {
+      settingsMap[item.key] = item.value;
+    });
+
     return NextResponse.json(
-      { success: true, message: '¡Configuración guardada exitosamente!' },
+      { success: true, message: '¡Configuración guardada exitosamente!', map: settingsMap },
       { headers: { 'Cache-Control': 'no-store, max-age=0' } }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating settings:', error);
-    return NextResponse.json({ error: 'Error al guardar configuraciones' }, { status: 500 });
+    return NextResponse.json({ error: error?.message || 'Error al guardar configuraciones' }, { status: 500 });
   }
 }

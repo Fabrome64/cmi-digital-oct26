@@ -24,6 +24,8 @@ export default function SettingsAdminPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [successBanner, setSuccessBanner] = useState<string | null>(null);
+  const [errorBanner, setErrorBanner] = useState<string | null>(null);
 
   // Admin Credentials Form State
   const [adminEmail, setAdminEmail] = useState('admin@cmidigital.com');
@@ -58,6 +60,8 @@ export default function SettingsAdminPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
+    setSuccessBanner(null);
+    setErrorBanner(null);
 
     try {
       const res = await fetch('/api/settings', {
@@ -69,16 +73,20 @@ export default function SettingsAdminPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setToastMsg('¡Operación realizada con éxito! Configuración global guardada.');
-        setTimeout(() => setToastMsg(null), 4000);
-      } else {
-        setToastMsg(`Error: ${data.error || 'No se pudo guardar la configuración'}`);
+        if (data.map) {
+          setSettings((prev) => ({ ...prev, ...data.map }));
+        }
+        const msg = '¡Operación realizada con éxito! Configuración global guardada en el servidor.';
+        setToastMsg(msg);
+        setSuccessBanner(msg);
         setTimeout(() => setToastMsg(null), 5000);
+      } else {
+        const errStr = data.error || 'No se pudo guardar la configuración.';
+        setErrorBanner(errStr);
       }
     } catch (err: any) {
       console.error(err);
-      setToastMsg(`Error de conexión: ${err.message}`);
-      setTimeout(() => setToastMsg(null), 5000);
+      setErrorBanner(`Error de conexión con el servidor: ${err.message}`);
     } finally {
       setSaving(false);
     }
@@ -138,6 +146,20 @@ export default function SettingsAdminPage() {
           <p className="text-sm text-gray-500">Modificá datos de la empresa, redes, WhatsApp, SEO, Google Maps y tus credenciales de acceso</p>
         </div>
       </div>
+
+      {successBanner && (
+        <div className="bg-green-100 border-2 border-green-500 text-green-900 p-4 rounded-2xl flex items-center space-x-3 shadow-md">
+          <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
+          <span className="font-extrabold text-sm">{successBanner}</span>
+        </div>
+      )}
+
+      {errorBanner && (
+        <div className="bg-red-100 border-2 border-red-500 text-red-900 p-4 rounded-2xl flex items-center space-x-3 shadow-md">
+          <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0" />
+          <span className="font-extrabold text-sm">{errorBanner}</span>
+        </div>
+      )}
 
       {/* SECURITY & ADMIN CREDENTIALS SECTION */}
       <div className="bg-gray-900 text-white p-6 sm:p-8 rounded-3xl border border-gray-800 shadow-xl space-y-4">
