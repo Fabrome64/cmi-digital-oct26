@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 export async function GET() {
   try {
@@ -8,7 +9,9 @@ export async function GET() {
       where: { activo: true },
       orderBy: [{ orden: 'asc' }, { createdAt: 'desc' }],
     });
-    return NextResponse.json(services);
+    return NextResponse.json(services, {
+      headers: { 'Cache-Control': 'no-store, max-age=0' },
+    });
   } catch (error) {
     return NextResponse.json({ error: 'Error al obtener servicios de marketing' }, { status: 500 });
   }
@@ -33,6 +36,7 @@ export async function POST(request: Request) {
       },
     });
 
+    revalidatePath('/', 'layout');
     return NextResponse.json(service, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Error al crear servicio' }, { status: 500 });

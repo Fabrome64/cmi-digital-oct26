@@ -61,7 +61,7 @@ export default function SettingsAdminPage() {
 
       if (res.ok) {
         setSavedSuccess(true);
-        setTimeout(() => setSavedSuccess(false), 3000);
+        setTimeout(() => setSavedSuccess(false), 4000);
       }
     } catch (err) {
       console.error(err);

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request: Request) {
   try {
@@ -17,7 +18,9 @@ export async function GET(request: Request) {
       orderBy: [{ orden: 'asc' }, { createdAt: 'desc' }],
     });
 
-    return NextResponse.json(products);
+    return NextResponse.json(products, {
+      headers: { 'Cache-Control': 'no-store, max-age=0' },
+    });
   } catch (error) {
     return NextResponse.json({ error: 'Error al obtener catálogo de impresiones' }, { status: 500 });
   }
@@ -45,6 +48,7 @@ export async function POST(request: Request) {
       },
     });
 
+    revalidatePath('/', 'layout');
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Error al crear producto de impresión' }, { status: 500 });

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request: Request) {
   try {
@@ -12,7 +13,6 @@ export async function GET(request: Request) {
     if (category && category !== 'Todos') where.categoria = category;
     if (featuredOnly) where.destacado = true;
 
-    // By default, public API returns only active items ordered by 'orden'
     where.activo = true;
 
     const portfolio = await prisma.webPortfolio.findMany({
@@ -20,7 +20,9 @@ export async function GET(request: Request) {
       orderBy: [{ orden: 'asc' }, { createdAt: 'desc' }],
     });
 
-    return NextResponse.json(portfolio);
+    return NextResponse.json(portfolio, {
+      headers: { 'Cache-Control': 'no-store, max-age=0' },
+    });
   } catch (error) {
     console.error('Error fetching web portfolio:', error);
     return NextResponse.json({ error: 'Error al obtener portfolio' }, { status: 500 });
@@ -51,6 +53,7 @@ export async function POST(request: Request) {
       },
     });
 
+    revalidatePath('/', 'layout');
     return NextResponse.json(item, { status: 201 });
   } catch (error) {
     console.error('Error creating portfolio item:', error);

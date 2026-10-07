@@ -1,17 +1,20 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 
 export async function GET() {
   try {
     const settingsList = await prisma.setting.findMany();
-    // Transform array to key-value dictionary for easy access in frontend
     const settingsMap: Record<string, string> = {};
     settingsList.forEach((item) => {
       settingsMap[item.key] = item.value;
     });
 
-    return NextResponse.json({ map: settingsMap, raw: settingsList });
+    return NextResponse.json(
+      { map: settingsMap, raw: settingsList },
+      { headers: { 'Cache-Control': 'no-store, max-age=0' } }
+    );
   } catch (error) {
     return NextResponse.json({ error: 'Error al obtener configuraciones' }, { status: 500 });
   }
@@ -22,7 +25,7 @@ export async function PUT(request: Request) {
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
   try {
-    const body = await request.json(); // Array of { key, value } or object map
+    const body = await request.json();
     const updates = Array.isArray(body)
       ? body
       : Object.entries(body).map(([key, value]) => ({ key, value: String(value) }));
@@ -39,7 +42,13 @@ export async function PUT(request: Request) {
       });
     }
 
-    return NextResponse.json({ success: true });
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/configuracion');
+
+    return NextResponse.json(
+      { success: true, message: '¡Configuración guardada exitosamente!' },
+      { headers: { 'Cache-Control': 'no-store, max-age=0' } }
+    );
   } catch (error) {
     console.error('Error updating settings:', error);
     return NextResponse.json({ error: 'Error al guardar configuraciones' }, { status: 500 });
