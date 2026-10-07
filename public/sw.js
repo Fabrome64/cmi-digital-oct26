@@ -1,8 +1,8 @@
-const CACHE_NAME = 'cmi-digital-v1';
+const CACHE_NAME = 'cmi-digital-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/manifest.json',
-  '/favicon.ico',
+  '/favicon.png',
 ];
 
 self.addEventListener('install', (event) => {
@@ -32,8 +32,15 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // NEVER intercept admin or API routes
+  if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/api')) {
+    return;
+  }
+
   if (event.request.method !== 'GET') return;
-  
+
   event.respondWith(
     fetch(event.request)
       .then((response) => {
@@ -46,10 +53,7 @@ self.addEventListener('fetch', (event) => {
         return response;
       })
       .catch(() => {
-        return caches.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
-          return caches.match('/');
-        });
+        return caches.match(event.request);
       })
   );
 });
