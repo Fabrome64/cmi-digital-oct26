@@ -112,7 +112,7 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
                 {/* Logo 1: San José Negocios Inmobiliarios */}
                 <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
                   <img
-                    src="/clients/san-jose-inmobiliaria.jpg"
+                    src="/clients/san-jose-inmobiliaria.png"
                     alt="San José Negocios Inmobiliarios"
                     className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
                     title="San José Negocios Inmobiliarios"
@@ -132,7 +132,7 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
                 {/* Logo 3: LM Quiropraxia */}
                 <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
                   <img
-                    src="/clients/lm-quiropraxia.jpg"
+                    src="/clients/lm-quiropraxia.png"
                     alt="LM Quiropraxia"
                     className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
                     title="LM Quiropraxia"
@@ -142,7 +142,7 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
                 {/* Logo 4: Elizabeth González Inmobiliaria */}
                 <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
                   <img
-                    src="/clients/elizabeth-gonzalez-inmobiliaria.jpg"
+                    src="/clients/elizabeth-gonzalez-inmobiliaria.png"
                     alt="Elizabeth González Inmobiliaria"
                     className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
                     title="Elizabeth González Inmobiliaria"
@@ -152,7 +152,7 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
                 {/* Logo 5: San José */}
                 <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
                   <img
-                    src="/clients/sj-supermercado.jpg"
+                    src="/clients/sj-supermercado.png"
                     alt="San José Comercial"
                     className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
                     title="San José Comercial"
@@ -162,7 +162,7 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
                 {/* Logo 6: Marca T */}
                 <div className="h-16 bg-white rounded-xl border border-cyan-100 p-1.5 flex items-center justify-center shadow-sm hover:shadow-md hover:border-[#00BCD4] transition-all group">
                   <img
-                    src="/clients/t-logo.jpg"
+                    src="/clients/t-logo.png"
                     alt="Marca T"
                     className="max-h-full max-w-full object-contain filter group-hover:scale-105 transition-transform"
                     title="Marca T"
