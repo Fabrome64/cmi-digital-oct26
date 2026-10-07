@@ -32,9 +32,11 @@ export default function Footer({
           {/* Col 1: Branding & Intro */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gray-900 text-[#FFD400] rounded-xl flex items-center justify-center font-black text-2xl shadow-lg">
-                CMI
-              </div>
+              <img
+                src="/logo.png"
+                alt="CMI DIGITAL Logo"
+                className="h-14 w-auto object-contain"
+              />
               <span className="font-extrabold text-2xl text-gray-900">{companyName}</span>
             </div>
             <p className="font-bold text-gray-800 text-sm leading-relaxed">

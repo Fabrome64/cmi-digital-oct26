@@ -33,9 +33,11 @@ export default function Header({
           {/* LEFT: Logo CMI DIGITAL */}
           <div className="flex items-center space-x-3">
             <Link href="#inicio" className="flex items-center space-x-3 group">
-              <div className="w-11 h-11 bg-gray-900 text-[#FFD400] rounded-xl flex items-center justify-center font-bold text-xl shadow-md transform group-hover:scale-105 transition-transform">
-                CMI
-              </div>
+              <img
+                src="/logo.png"
+                alt="CMI DIGITAL Logo"
+                className="h-12 w-auto object-contain transform group-hover:scale-105 transition-transform"
+              />
               <div className="flex flex-col">
                 <span className="font-extrabold text-2xl tracking-tight text-gray-900 group-hover:text-black">
                   {companyName}

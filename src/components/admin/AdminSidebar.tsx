@@ -68,9 +68,7 @@ export default function AdminSidebar() {
           {/* Logo Header */}
           <div className="h-20 flex items-center justify-between px-6 border-b border-gray-800 bg-gray-950">
             <Link href="/admin" className="flex items-center space-x-3">
-              <div className="w-9 h-9 bg-[#FFD400] text-gray-900 rounded-lg flex items-center justify-center font-black text-lg shadow">
-                CMI
-              </div>
+              <img src="/logo.png" alt="CMI Digital" className="h-10 w-auto object-contain" />
               <div className="flex flex-col">
                 <span className="font-extrabold text-lg text-white tracking-tight">
                   CMI DIGITAL

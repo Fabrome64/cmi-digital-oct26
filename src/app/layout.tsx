@@ -30,7 +30,8 @@ export default function RootLayout({
   return (
     <html lang="es">
       <head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
+        <link rel="shortcut icon" href="/favicon.png" />
         <meta name="theme-color" content="#FFD400" />
         <script
           type="application/ld+json"

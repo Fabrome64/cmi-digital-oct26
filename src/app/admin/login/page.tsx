@@ -43,9 +43,7 @@ export default function AdminLoginPage() {
         
         {/* Brand Header */}
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 bg-[#FFD400] text-gray-900 font-black rounded-2xl flex items-center justify-center text-3xl mx-auto shadow-lg">
-            CMI
-          </div>
+          <img src="/logo.png" alt="CMI Digital" className="h-16 w-auto object-contain mx-auto" />
           <h2 className="text-2xl font-extrabold text-white">ACCESO ADMINISTRATIVO</h2>
           <p className="text-xs text-yellow-400 font-semibold uppercase tracking-widest">
             CMI DIGITAL · Panel Privado
