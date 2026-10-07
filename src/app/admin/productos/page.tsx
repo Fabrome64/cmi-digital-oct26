@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 import { Plus, Package, Edit2, Trash2, X, Tag } from 'lucide-react';
 import { PrintProductType } from '@/types';
 
+import SuccessToast from '@/components/admin/SuccessToast';
+
 export default function ProductsAdminPage() {
   const [products, setProducts] = useState<PrintProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProd, setEditingProd] = useState<PrintProductType | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -73,7 +76,11 @@ export default function ProductsAdminPage() {
     if (!confirm('¿Eliminar producto de catálogo?')) return;
     try {
       const res = await fetch(`/api/print-products/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchProducts();
+      if (res.ok) {
+        setToastMsg('¡Operación realizada con éxito! Producto eliminado.');
+        setTimeout(() => setToastMsg(null), 4000);
+        fetchProducts();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -93,6 +100,8 @@ export default function ProductsAdminPage() {
 
       if (res.ok) {
         setIsModalOpen(false);
+        setToastMsg(`¡Operación realizada con éxito! Producto ${editingProd ? 'actualizado' : 'creado'}.`);
+        setTimeout(() => setToastMsg(null), 4000);
         fetchProducts();
       }
     } catch (err) {
@@ -102,6 +111,9 @@ export default function ProductsAdminPage() {
 
   return (
     <div className="space-y-6 font-poppins">
+      {toastMsg && (
+        <SuccessToast message={toastMsg} onClose={() => setToastMsg(null)} />
+      )}
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 import { Plus, Box, AlertTriangle, Edit2, Trash2, X } from 'lucide-react';
 import { SupplyType } from '@/types';
 
+import SuccessToast from '@/components/admin/SuccessToast';
+
 export default function SuppliesPage() {
   const [supplies, setSupplies] = useState<SupplyType[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSupply, setEditingSupply] = useState<SupplyType | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -70,7 +73,11 @@ export default function SuppliesPage() {
     if (!confirm('¿Eliminar insumo?')) return;
     try {
       const res = await fetch(`/api/supplies/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchSupplies();
+      if (res.ok) {
+        setToastMsg('¡Operación realizada con éxito! Insumo eliminado.');
+        setTimeout(() => setToastMsg(null), 4000);
+        fetchSupplies();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -90,6 +97,8 @@ export default function SuppliesPage() {
 
       if (res.ok) {
         setIsModalOpen(false);
+        setToastMsg(`¡Operación realizada con éxito! Insumo ${editingSupply ? 'actualizado' : 'creado'}.`);
+        setTimeout(() => setToastMsg(null), 4000);
         fetchSupplies();
       }
     } catch (err) {
@@ -101,6 +110,9 @@ export default function SuppliesPage() {
 
   return (
     <div className="space-y-6 font-poppins">
+      {toastMsg && (
+        <SuccessToast message={toastMsg} onClose={() => setToastMsg(null)} />
+      )}
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

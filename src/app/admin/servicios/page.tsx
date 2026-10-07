@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 import { Plus, Share2, Edit2, Trash2, X } from 'lucide-react';
 import { MarketingServiceType } from '@/types';
 
+import SuccessToast from '@/components/admin/SuccessToast';
+
 export default function MarketingServicesAdminPage() {
   const [services, setServices] = useState<MarketingServiceType[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSvc, setEditingSvc] = useState<MarketingServiceType | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     titulo: '',
@@ -64,7 +67,11 @@ export default function MarketingServicesAdminPage() {
     if (!confirm('¿Eliminar servicio de marketing?')) return;
     try {
       const res = await fetch(`/api/services/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchServices();
+      if (res.ok) {
+        setToastMsg('¡Operación realizada con éxito! Servicio eliminado.');
+        setTimeout(() => setToastMsg(null), 4000);
+        fetchServices();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -84,6 +91,8 @@ export default function MarketingServicesAdminPage() {
 
       if (res.ok) {
         setIsModalOpen(false);
+        setToastMsg(`¡Operación realizada con éxito! Servicio ${editingSvc ? 'actualizado' : 'creado'}.`);
+        setTimeout(() => setToastMsg(null), 4000);
         fetchServices();
       }
     } catch (err) {
@@ -93,6 +102,9 @@ export default function MarketingServicesAdminPage() {
 
   return (
     <div className="space-y-6 font-poppins">
+      {toastMsg && (
+        <SuccessToast message={toastMsg} onClose={() => setToastMsg(null)} />
+      )}
       
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>

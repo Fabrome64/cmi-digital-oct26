@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Plus, CreditCard, AlertCircle, CheckCircle2, Clock, XCircle, Edit2, Trash2, X } from 'lucide-react';
 import { WebSubscriptionType, ClientType } from '@/types';
 
+import SuccessToast from '@/components/admin/SuccessToast';
+
 export default function SubscriptionsPage() {
   const [subscriptions, setSubscriptions] = useState<WebSubscriptionType[]>([]);
   const [clients, setClients] = useState<ClientType[]>([]);
@@ -11,6 +13,7 @@ export default function SubscriptionsPage() {
   const [filterState, setFilterState] = useState<string>('Todos');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingSub, setEditingSub] = useState<WebSubscriptionType | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     clienteId: '',
@@ -85,7 +88,11 @@ export default function SubscriptionsPage() {
     if (!confirm('¿Eliminar abono web?')) return;
     try {
       const res = await fetch(`/api/web-subscriptions/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchData();
+      if (res.ok) {
+        setToastMsg('¡Operación realizada con éxito! Abono eliminado.');
+        setTimeout(() => setToastMsg(null), 4000);
+        fetchData();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -105,6 +112,8 @@ export default function SubscriptionsPage() {
 
       if (res.ok) {
         setIsModalOpen(false);
+        setToastMsg(`¡Operación realizada con éxito! Abono ${editingSub ? 'actualizado' : 'creado'}.`);
+        setTimeout(() => setToastMsg(null), 4000);
         fetchData();
       }
     } catch (err) {
@@ -133,6 +142,9 @@ export default function SubscriptionsPage() {
 
   return (
     <div className="space-y-6 font-poppins">
+      {toastMsg && (
+        <SuccessToast message={toastMsg} onClose={() => setToastMsg(null)} />
+      )}
       
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 import { Plus, FolderKanban, Edit2, Trash2, X, ExternalLink, Star } from 'lucide-react';
 import { WebPortfolioType } from '@/types';
 
+import SuccessToast from '@/components/admin/SuccessToast';
+
 export default function PortfolioAdminPage() {
   const [portfolio, setPortfolio] = useState<WebPortfolioType[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<WebPortfolioType | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     titulo: '',
@@ -76,7 +79,11 @@ export default function PortfolioAdminPage() {
     if (!confirm('¿Eliminar proyecto de portfolio?')) return;
     try {
       const res = await fetch(`/api/portfolio/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchPortfolio();
+      if (res.ok) {
+        setToastMsg('¡Operación realizada con éxito! Proyecto eliminado.');
+        setTimeout(() => setToastMsg(null), 4000);
+        fetchPortfolio();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -96,6 +103,8 @@ export default function PortfolioAdminPage() {
 
       if (res.ok) {
         setIsModalOpen(false);
+        setToastMsg(`¡Operación realizada con éxito! Proyecto ${editingItem ? 'actualizado' : 'creado'}.`);
+        setTimeout(() => setToastMsg(null), 4000);
         fetchPortfolio();
       }
     } catch (err) {
@@ -105,6 +114,9 @@ export default function PortfolioAdminPage() {
 
   return (
     <div className="space-y-6 font-poppins">
+      {toastMsg && (
+        <SuccessToast message={toastMsg} onClose={() => setToastMsg(null)} />
+      )}
       
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>

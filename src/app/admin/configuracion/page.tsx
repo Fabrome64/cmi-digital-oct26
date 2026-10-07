@@ -66,12 +66,19 @@ export default function SettingsAdminPage() {
         body: JSON.stringify(settings),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        setToastMsg('¡Configuración global guardada exitosamente!');
+        setToastMsg('¡Operación realizada con éxito! Configuración global guardada.');
         setTimeout(() => setToastMsg(null), 4000);
+      } else {
+        setToastMsg(`Error: ${data.error || 'No se pudo guardar la configuración'}`);
+        setTimeout(() => setToastMsg(null), 5000);
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setToastMsg(`Error de conexión: ${err.message}`);
+      setTimeout(() => setToastMsg(null), 5000);
     } finally {
       setSaving(false);
     }

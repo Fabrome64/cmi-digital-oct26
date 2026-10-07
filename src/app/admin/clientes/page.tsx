@@ -4,12 +4,15 @@ import { useState, useEffect } from 'react';
 import { Plus, Search, Edit2, Trash2, Phone, Mail, MapPin, Building, X, Check } from 'lucide-react';
 import { ClientType } from '@/types';
 
+import SuccessToast from '@/components/admin/SuccessToast';
+
 export default function ClientsPage() {
   const [clients, setClients] = useState<ClientType[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<ClientType | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     nombre: '',
@@ -86,7 +89,11 @@ export default function ClientsPage() {
     if (!confirm('¿Estás seguro de eliminar este cliente?')) return;
     try {
       const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchClients();
+      if (res.ok) {
+        setToastMsg('¡Operación realizada con éxito! Cliente eliminado.');
+        setTimeout(() => setToastMsg(null), 4000);
+        fetchClients();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -106,6 +113,8 @@ export default function ClientsPage() {
 
       if (res.ok) {
         setIsModalOpen(false);
+        setToastMsg(`¡Operación realizada con éxito! Cliente ${editingClient ? 'actualizado' : 'creado'}.`);
+        setTimeout(() => setToastMsg(null), 4000);
         fetchClients();
       }
     } catch (err) {
@@ -122,6 +131,9 @@ export default function ClientsPage() {
 
   return (
     <div className="space-y-6 font-poppins">
+      {toastMsg && (
+        <SuccessToast message={toastMsg} onClose={() => setToastMsg(null)} />
+      )}
       
       {/* Top Action Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

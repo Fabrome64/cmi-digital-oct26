@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 import { Plus, DollarSign, Calendar, Tag, Trash2, Edit2, X, TrendingDown } from 'lucide-react';
 import { ExpenseType } from '@/types';
 
+import SuccessToast from '@/components/admin/SuccessToast';
+
 export default function ExpensesPage() {
   const [expenses, setExpenses] = useState<ExpenseType[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingExp, setEditingExp] = useState<ExpenseType | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     fecha: new Date().toISOString().split('T')[0],
@@ -70,7 +73,11 @@ export default function ExpensesPage() {
     if (!confirm('¿Eliminar registro de gasto?')) return;
     try {
       const res = await fetch(`/api/expenses/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchExpenses();
+      if (res.ok) {
+        setToastMsg('¡Operación realizada con éxito! Gasto eliminado.');
+        setTimeout(() => setToastMsg(null), 4000);
+        fetchExpenses();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -90,6 +97,8 @@ export default function ExpensesPage() {
 
       if (res.ok) {
         setIsModalOpen(false);
+        setToastMsg(`¡Operación realizada con éxito! Gasto ${editingExp ? 'actualizado' : 'registrado'}.`);
+        setTimeout(() => setToastMsg(null), 4000);
         fetchExpenses();
       }
     } catch (err) {
@@ -109,6 +118,9 @@ export default function ExpensesPage() {
 
   return (
     <div className="space-y-6 font-poppins">
+      {toastMsg && (
+        <SuccessToast message={toastMsg} onClose={() => setToastMsg(null)} />
+      )}
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

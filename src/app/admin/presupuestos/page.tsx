@@ -4,11 +4,14 @@ import { useState, useEffect } from 'react';
 import { FileText, Eye, Edit2, Trash2, X, Check, Clock } from 'lucide-react';
 import { BudgetType } from '@/types';
 
+import SuccessToast from '@/components/admin/SuccessToast';
+
 export default function PresupuestosAdminPage() {
   const [budgets, setBudgets] = useState<BudgetType[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeStatus, setActiveStatus] = useState<string>('Todos');
   const [selectedBudget, setSelectedBudget] = useState<BudgetType | null>(null);
+  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
   const [editStatus, setEditStatus] = useState('');
   const [editMonto, setEditMonto] = useState(0);
@@ -53,6 +56,8 @@ export default function PresupuestosAdminPage() {
 
       if (res.ok) {
         setSelectedBudget(null);
+        setToastMsg('¡Operación realizada con éxito! Presupuesto actualizado.');
+        setTimeout(() => setToastMsg(null), 4000);
         fetchBudgets();
       }
     } catch (err) {
@@ -64,7 +69,11 @@ export default function PresupuestosAdminPage() {
     if (!confirm('¿Eliminar presupuesto?')) return;
     try {
       const res = await fetch(`/api/budgets/${id}`, { method: 'DELETE' });
-      if (res.ok) fetchBudgets();
+      if (res.ok) {
+        setToastMsg('¡Operación realizada con éxito! Presupuesto eliminado.');
+        setTimeout(() => setToastMsg(null), 4000);
+        fetchBudgets();
+      }
     } catch (err) {
       console.error(err);
     }
@@ -95,6 +104,9 @@ export default function PresupuestosAdminPage() {
 
   return (
     <div className="space-y-6 font-poppins">
+      {toastMsg && (
+        <SuccessToast message={toastMsg} onClose={() => setToastMsg(null)} />
+      )}
       
       <div>
         <h2 className="text-2xl font-extrabold text-gray-900">Solicitudes de Presupuesto</h2>
