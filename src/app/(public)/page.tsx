@@ -8,12 +8,13 @@ import ContactSection from '@/components/public/ContactSection';
 import Footer from '@/components/public/Footer';
 import PWAPrompt from '@/components/public/PWAPrompt';
 import { prisma } from '@/lib/prisma';
+import { getMemorySettings } from '@/lib/settingsStore';
 
 export const revalidate = 0; // Dynamic SSR to ensure Instant DB Sync (Requisito 31)
 
 export default async function HomePage() {
-  // Fetch global settings dynamically from database
-  const settings: Record<string, string> = {};
+  // Fetch global settings dynamically from database with memory store fallback
+  const settings: Record<string, string> = { ...getMemorySettings() };
   try {
     const settingsList = await prisma.setting.findMany();
     settingsList.forEach((s) => {

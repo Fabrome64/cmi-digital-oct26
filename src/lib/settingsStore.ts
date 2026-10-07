@@ -1,5 +1,8 @@
-// In-memory fallback store for settings if Prisma DB connection is unavailable
-const memorySettings: Record<string, string> = {
+import fs from 'fs';
+import path from 'path';
+
+// In-memory & file-based fallback store for settings if Prisma DB connection is unavailable
+const defaultSettings: Record<string, string> = {
   company_name: 'CMI DIGITAL',
   hero_title: 'CMI DIGITAL',
   hero_subtitle: 'Soluciones que hacen visible tu negocio.',
@@ -15,7 +18,47 @@ const memorySettings: Record<string, string> = {
   meta_description: 'Empresa líder en San José de Feliciano en Impresiones de Gran Formato, Marketing Digital, Administración de Redes Sociales y Desarrollo de Sitios Web Profesionales.',
 };
 
+function getCacheFilePath(): string {
+  try {
+    const tmpDir = process.env.TMPDIR || process.env.TMP || '/tmp';
+    if (fs.existsSync(tmpDir)) {
+      return path.join(tmpDir, 'cmi_settings_v1.json');
+    }
+  } catch (e) {
+    // fallback
+  }
+  return path.join(process.cwd(), '.settings_cache.json');
+}
+
+let memorySettings: Record<string, string> = { ...defaultSettings };
+
+// Try loading persisted file on module init
+try {
+  const filePath = getCacheFilePath();
+  if (fs.existsSync(filePath)) {
+    const raw = fs.readFileSync(filePath, 'utf-8');
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object') {
+      memorySettings = { ...defaultSettings, ...parsed };
+    }
+  }
+} catch (e) {
+  console.warn('Could not read settings cache file:', e);
+}
+
 export function getMemorySettings(): Record<string, string> {
+  try {
+    const filePath = getCacheFilePath();
+    if (fs.existsSync(filePath)) {
+      const raw = fs.readFileSync(filePath, 'utf-8');
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        memorySettings = { ...defaultSettings, ...parsed };
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
   return { ...memorySettings };
 }
 
@@ -23,5 +66,11 @@ export function updateMemorySettings(updates: Record<string, string>): Record<st
   Object.entries(updates).forEach(([key, val]) => {
     memorySettings[key] = String(val ?? '');
   });
+  try {
+    const filePath = getCacheFilePath();
+    fs.writeFileSync(filePath, JSON.stringify(memorySettings, null, 2), 'utf-8');
+  } catch (e) {
+    console.warn('Could not persist settings cache file:', e);
+  }
   return { ...memorySettings };
 }
