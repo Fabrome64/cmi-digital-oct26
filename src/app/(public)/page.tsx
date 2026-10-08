@@ -3,7 +3,6 @@ import Hero from '@/components/public/Hero';
 import WebDesignSection from '@/components/public/WebDesignSection';
 import MarketingSection from '@/components/public/MarketingSection';
 import PrintSection from '@/components/public/PrintSection';
-import BudgetForm from '@/components/public/BudgetForm';
 import ContactSection from '@/components/public/ContactSection';
 import Footer from '@/components/public/Footer';
 import PWAPrompt from '@/components/public/PWAPrompt';
@@ -65,10 +64,7 @@ export default async function HomePage() {
         {/* 5. SECCIÓN IMPRESIONES GRAN FORMATO & CATÁLOGO DINÁMICO */}
         <PrintSection whatsapp={whatsapp} />
 
-        {/* 6. SOLICITÁ TU PRESUPUESTO FORMULARIO */}
-        <BudgetForm />
-
-        {/* 7. SECCIÓN CONTACTO & ¿DÓNDE ESTAMOS? */}
+        {/* 6. SECCIÓN CONTACTO & ¿DÓNDE ESTAMOS? */}
         <ContactSection
           address={address}
           phone={phone}

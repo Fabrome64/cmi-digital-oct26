@@ -3,19 +3,23 @@
 import { useState, useEffect } from 'react';
 import {
   Printer, Layers, ShieldAlert, Award, Grid, Compass, Truck, Eye,
-  Sparkles, Maximize2, Tag, CheckCircle2, MessageSquare
+  Sparkles, Maximize2, Tag, CheckCircle2, MessageSquare, Calculator
 } from 'lucide-react';
 import { PrintProductType } from '@/types';
-import { getWhatsAppUrl } from '@/lib/whatsapp';
+import PublicBudgetModal from './PublicBudgetModal';
 
 interface PrintSectionProps {
   whatsapp?: string;
 }
 
-export default function PrintSection({ whatsapp = '5493437421589' }: PrintSectionProps) {
+export default function PrintSection({ whatsapp = '5493458659792' }: PrintSectionProps) {
   const [products, setProducts] = useState<PrintProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>('Todos');
+
+  // Budget Modal State
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+  const [modalMaterialName, setModalMaterialName] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     async function loadProducts() {
@@ -55,6 +59,11 @@ export default function PrintSection({ whatsapp = '5493437421589' }: PrintSectio
     ? products
     : products.filter((p) => p.categoria === activeCategory);
 
+  const handleOpenCalculator = (materialName?: string) => {
+    setModalMaterialName(materialName);
+    setIsBudgetModalOpen(true);
+  };
+
   return (
     <section id="impresiones" className="py-20 bg-gradient-to-b from-white via-[#FFF8D6] to-white border-t border-yellow-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -66,7 +75,7 @@ export default function PrintSection({ whatsapp = '5493437421589' }: PrintSectio
             <span>Impresión Ecosolvente & Gran Formato</span>
           </div>
           <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
-            IMPRESIONES GRAN FORMATO
+            IMPRESIONES GRAN FORMATO & GRÁFICA
           </h2>
           <p className="text-xl font-bold text-yellow-800 mt-2">
             Tu marca también se imprime.
@@ -86,16 +95,17 @@ export default function PrintSection({ whatsapp = '5493437421589' }: PrintSectio
             </p>
 
             <div className="pt-4 flex flex-col sm:flex-row gap-4">
-              <a
-                href="#presupuesto"
-                className="inline-flex items-center justify-center space-x-2 bg-gray-900 hover:bg-black text-[#FFD400] font-extrabold px-6 py-3.5 rounded-xl shadow-lg transition-transform transform hover:-translate-y-0.5 text-base"
+              <button
+                onClick={() => handleOpenCalculator()}
+                className="inline-flex items-center justify-center space-x-2.5 bg-gray-900 hover:bg-black text-[#FFD400] font-extrabold px-6 py-4 rounded-xl shadow-xl transition-all transform hover:-translate-y-0.5 text-base border-none cursor-pointer"
               >
+                <Calculator className="w-5 h-5 text-yellow-400" />
                 <span>PEDIR PRESUPUESTO</span>
-              </a>
+              </button>
 
               <a
                 href="#catalogo-impresiones"
-                className="inline-flex items-center justify-center space-x-2 bg-white hover:bg-yellow-100 text-gray-900 border-2 border-gray-900 font-extrabold px-6 py-3.5 rounded-xl shadow transition-all text-base"
+                className="inline-flex items-center justify-center space-x-2 bg-white hover:bg-yellow-100 text-gray-900 border-2 border-gray-900 font-extrabold px-6 py-4 rounded-xl shadow transition-all text-base"
               >
                 <span>VER PRODUCTOS</span>
               </a>
@@ -109,7 +119,8 @@ export default function PrintSection({ whatsapp = '5493437421589' }: PrintSectio
               return (
                 <div
                   key={idx}
-                  className="bg-white p-4 rounded-2xl border border-yellow-200 shadow-sm hover:shadow-md hover:border-[#FFD400] transition-all card-hover group"
+                  onClick={() => handleOpenCalculator(box.title)}
+                  className="bg-white p-4 rounded-2xl border border-yellow-200 shadow-sm hover:shadow-md hover:border-[#FFD400] transition-all card-hover group cursor-pointer"
                 >
                   <div className="w-10 h-10 bg-[#FFF8D6] group-hover:bg-[#FFD400] text-gray-900 rounded-xl flex items-center justify-center mb-3 transition-colors">
                     <IconComp className="w-5 h-5" />
@@ -215,15 +226,13 @@ export default function PrintSection({ whatsapp = '5493437421589' }: PrintSectio
                       </div>
                     )}
 
-                    <a
-                      href={getWhatsAppUrl(whatsapp, 'PRINT', `Hola CMI Digital, quiero consultar por el producto: ${prod.nombre}`)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full inline-flex items-center justify-center space-x-2 bg-[#FFD400] hover:bg-yellow-400 text-gray-900 font-extrabold py-2.5 rounded-xl transition-colors text-sm shadow"
+                    <button
+                      onClick={() => handleOpenCalculator(prod.nombre)}
+                      className="w-full inline-flex items-center justify-center space-x-2 bg-[#FFD400] hover:bg-yellow-400 text-gray-900 font-extrabold py-2.5 rounded-xl transition-colors text-sm shadow border-none cursor-pointer"
                     >
-                      <MessageSquare className="w-4 h-4" />
-                      <span>SOLICITAR PRESUPUESTO</span>
-                    </a>
+                      <Calculator className="w-4 h-4 text-gray-900" />
+                      <span>PEDIR PRESUPUESTO</span>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -232,6 +241,14 @@ export default function PrintSection({ whatsapp = '5493437421589' }: PrintSectio
         </div>
 
       </div>
+
+      {/* Interactive Public Budget Modal featuring Admin Calculator Block */}
+      <PublicBudgetModal
+        isOpen={isBudgetModalOpen}
+        onClose={() => setIsBudgetModalOpen(false)}
+        whatsapp={whatsapp}
+        initialMaterialName={modalMaterialName}
+      />
     </section>
   );
 }

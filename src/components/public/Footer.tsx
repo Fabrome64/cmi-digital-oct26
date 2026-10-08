@@ -103,7 +103,7 @@ export default function Footer({
                 </a>
               </li>
               <li>
-                <a href="#presupuesto" className="hover:underline hover:text-black">
+                <a href="#impresiones" className="hover:underline hover:text-black">
                   Solicitar Presupuesto
                 </a>
               </li>
