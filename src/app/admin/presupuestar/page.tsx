@@ -67,9 +67,14 @@ export default function PresupuestarPage() {
     fetchMaterials();
   }, []);
 
+  const normalizeRubro = (s: string) =>
+    (s || '').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+
   // Filtered materials
   const filteredMaterials = materials.filter((m) => {
-    const matchesRubro = rubroFilter === 'TODOS' || m.rubro === rubroFilter;
+    const normM = normalizeRubro(m.rubro);
+    const normF = normalizeRubro(rubroFilter);
+    const matchesRubro = rubroFilter === 'TODOS' || normM === normF;
     const matchesSearch =
       m.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
       m.rubro.toLowerCase().includes(searchQuery.toLowerCase());
@@ -191,9 +196,17 @@ ${numericAdicionales > 0 ? `➕ *Adicionales:* $${numericAdicionales.toLocaleStr
       });
 
       if (res.ok) {
+        const savedItem = await res.json();
         setToastMsg(`¡Insumo ${editingMaterial ? 'actualizado' : 'creado'} con éxito!`);
         setTimeout(() => setToastMsg(null), 4000);
         setIsModalOpen(false);
+        // Ensure active filter shows the newly created item
+        if (rubroFilter !== 'TODOS' && normalizeRubro(rubroFilter) !== normalizeRubro(materialForm.rubro)) {
+          setRubroFilter(materialForm.rubro);
+        }
+        if (savedItem && savedItem.id) {
+          setSelectedMaterialId(savedItem.id);
+        }
         fetchMaterials();
       }
     } catch (err) {

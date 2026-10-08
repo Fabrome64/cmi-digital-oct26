@@ -25,7 +25,7 @@ export async function GET() {
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
   try {
-    const materials = await (prisma as any).budgetMaterial.findMany({
+    const materials = await prisma.budgetMaterial.findMany({
       orderBy: { nombre: 'asc' },
     });
     return NextResponse.json(materials, {
@@ -35,7 +35,7 @@ export async function GET() {
     console.warn('DB error on GET /api/budget-materials, using fallback memory store:', error?.message);
     try {
       await prisma.$executeRawUnsafe(createBudgetMaterialTableSQL);
-      const materials = await (prisma as any).budgetMaterial.findMany({ orderBy: { nombre: 'asc' } });
+      const materials = await prisma.budgetMaterial.findMany({ orderBy: { nombre: 'asc' } });
       return NextResponse.json(materials, { headers: { 'Cache-Control': 'no-store, max-age=0' } });
     } catch {
       return NextResponse.json(getMemoryBudgetMaterials(), { headers: { 'Cache-Control': 'no-store, max-age=0' } });
@@ -58,16 +58,17 @@ export async function POST(request: Request) {
 
   const dataToSave = sanitizeUppercasePayload(rawData);
 
+  // Always create in memory fallback store as well
   const memoryItem = createMemoryBudgetMaterial(dataToSave);
 
   try {
-    const material = await (prisma as any).budgetMaterial.create({ data: dataToSave });
+    const material = await prisma.budgetMaterial.create({ data: dataToSave });
     return NextResponse.json(material, { status: 201 });
   } catch (error: any) {
     console.warn('DB error on POST /api/budget-materials, returning memory material:', error?.message);
     try {
       await prisma.$executeRawUnsafe(createBudgetMaterialTableSQL);
-      const material = await (prisma as any).budgetMaterial.create({ data: dataToSave });
+      const material = await prisma.budgetMaterial.create({ data: dataToSave });
       return NextResponse.json(material, { status: 201 });
     } catch {
       return NextResponse.json(memoryItem, { status: 201 });

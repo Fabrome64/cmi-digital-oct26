@@ -207,3 +207,14 @@ model Media {
   altText      String?
   createdAt    DateTime @default(now())
 }
+
+model BudgetMaterial {
+  id             String   @id @default(uuid())
+  nombre         String
+  rubro          String   // IMPRENTA GRÁFICA, GRAN FORMATO
+  unidadCalculo  String   // METRO CUADRADO, METRO LINEAL, UNIDAD
+  precioUnitario Float
+  observaciones  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

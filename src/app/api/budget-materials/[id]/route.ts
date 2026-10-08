@@ -21,7 +21,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   const memoryUpdated = updateMemoryBudgetMaterial(params.id, dataToSave);
 
   try {
-    const updated = await (prisma as any).budgetMaterial.update({
+    const updated = await prisma.budgetMaterial.update({
       where: { id: params.id },
       data: dataToSave,
     });
@@ -39,7 +39,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   deleteMemoryBudgetMaterial(params.id);
 
   try {
-    await (prisma as any).budgetMaterial.delete({ where: { id: params.id } });
+    await prisma.budgetMaterial.delete({ where: { id: params.id } });
   } catch (error) {
     console.warn('DB error on DELETE /api/budget-materials/[id], ignored for memory fallback:', error);
   }
