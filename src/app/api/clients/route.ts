@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
 import { getMemoryClients } from '@/lib/memoryDataStore';
+import { sanitizeUppercasePayload } from '@/lib/stringUtils';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
   const body = await request.json();
-  const dataToSave = {
+  const rawData = {
     nombre: body.nombre,
     apellido: body.apellido || null,
     empresa: body.empresa || null,
@@ -64,11 +65,12 @@ export async function POST(request: Request) {
     whatsapp: body.whatsapp || null,
     email: body.email || null,
     direccion: body.direccion || null,
-    localidad: body.localidad || 'San José de Feliciano',
-    provincia: body.provincia || 'Entre Ríos',
+    localidad: body.localidad || 'SAN JOSÉ DE FELICIANO',
+    provincia: body.provincia || 'ENTRE RÍOS',
     observaciones: body.observaciones || null,
     estado: body.estado || 'Activo',
   };
+  const dataToSave = sanitizeUppercasePayload(rawData);
 
   try {
     const client = await prisma.client.create({ data: dataToSave });

@@ -308,9 +308,9 @@ export default function ExpensesPage() {
                   type="text"
                   required
                   value={formData.concepto}
-                  onChange={(e) => setFormData({ ...formData, concepto: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, concepto: e.target.value.toUpperCase() })}
                   placeholder="Ej. Compra de tintas / Servicio luz"
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 
@@ -320,9 +320,9 @@ export default function ExpensesPage() {
                   <input
                     type="text"
                     value={formData.proveedor}
-                    onChange={(e) => setFormData({ ...formData, proveedor: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, proveedor: e.target.value.toUpperCase() })}
                     placeholder="Ej. GrafiTech / Particular"
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
                 <div>
@@ -358,9 +358,9 @@ export default function ExpensesPage() {
                   <input
                     type="text"
                     value={formData.comprobante}
-                    onChange={(e) => setFormData({ ...formData, comprobante: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, comprobante: e.target.value.toUpperCase() })}
                     placeholder="Ej. FAC-000123"
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>
@@ -370,8 +370,8 @@ export default function ExpensesPage() {
                 <textarea
                   rows={2}
                   value={formData.observaciones}
-                  onChange={(e) => setFormData({ ...formData, observaciones: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  onChange={(e) => setFormData({ ...formData, observaciones: e.target.value.toUpperCase() })}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 

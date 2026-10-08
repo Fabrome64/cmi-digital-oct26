@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { getMemoryPortfolio } from '@/lib/memoryDataStore';
+import { sanitizeUppercasePayload } from '@/lib/stringUtils';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -68,19 +69,20 @@ export async function POST(request: Request) {
 
   const body = await request.json();
 
-  const dataToSave = {
+  const rawData = {
     titulo: body.titulo,
     cliente: body.cliente,
     descripcion: body.descripcion,
     imagenPrincipal: body.imagenPrincipal,
     imagenes: body.imagenes ? (typeof body.imagenes === 'string' ? body.imagenes : JSON.stringify(body.imagenes)) : '[]',
     url: body.url || null,
-    categoria: body.categoria || 'General',
-    tecnologias: body.tecnologias || 'Next.js',
+    categoria: body.categoria || 'GENERAL',
+    tecnologias: body.tecnologias || 'NEXT.JS',
     destacado: Boolean(body.destacado),
     orden: Number(body.orden) || 0,
     activo: body.activo !== undefined ? Boolean(body.activo) : true,
   };
+  const dataToSave = sanitizeUppercasePayload(rawData);
 
   try {
     const item = await prisma.webPortfolio.create({ data: dataToSave });

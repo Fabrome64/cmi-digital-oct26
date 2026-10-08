@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
 import { getMemorySupplies } from '@/lib/memoryDataStore';
+import { sanitizeUppercasePayload } from '@/lib/stringUtils';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -55,17 +56,18 @@ export async function POST(request: Request) {
   const stockMinimo = Number(body.stockMinimo) || 5;
   const estado = stock <= stockMinimo ? 'Bajo Stock' : 'Disponible';
 
-  const dataToSave = {
+  const rawData = {
     nombre: body.nombre,
-    categoria: body.categoria || 'General',
+    categoria: body.categoria || 'GENERAL',
     proveedor: body.proveedor || null,
-    unidad: body.unidad || 'Unidad',
+    unidad: body.unidad || 'UNIDAD',
     stock,
     stockMinimo,
     costo: Number(body.costo) || 0,
     ubicacion: body.ubicacion || null,
     estado,
   };
+  const dataToSave = sanitizeUppercasePayload(rawData);
 
   try {
     const supply = await prisma.supply.create({ data: dataToSave });

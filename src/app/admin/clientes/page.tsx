@@ -259,8 +259,8 @@ export default function ClientsPage() {
                     type="text"
                     required
                     value={formData.nombre}
-                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
                 <div>
@@ -268,8 +268,8 @@ export default function ClientsPage() {
                   <input
                     type="text"
                     value={formData.apellido}
-                    onChange={(e) => setFormData({ ...formData, apellido: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, apellido: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>
@@ -280,8 +280,8 @@ export default function ClientsPage() {
                   <input
                     type="text"
                     value={formData.empresa}
-                    onChange={(e) => setFormData({ ...formData, empresa: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, empresa: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
                 <div>
@@ -289,8 +289,8 @@ export default function ClientsPage() {
                   <input
                     type="text"
                     value={formData.cuitDni}
-                    onChange={(e) => setFormData({ ...formData, cuitDni: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, cuitDni: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>
@@ -301,8 +301,8 @@ export default function ClientsPage() {
                   <input
                     type="text"
                     value={formData.telefono}
-                    onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, telefono: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
                 <div>
@@ -310,8 +310,8 @@ export default function ClientsPage() {
                   <input
                     type="text"
                     value={formData.whatsapp}
-                    onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, whatsapp: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
                 <div>
@@ -319,8 +319,8 @@ export default function ClientsPage() {
                   <input
                     type="email"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>
@@ -331,8 +331,8 @@ export default function ClientsPage() {
                   <input
                     type="text"
                     value={formData.direccion}
-                    onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, direccion: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
                 <div>
@@ -340,8 +340,8 @@ export default function ClientsPage() {
                   <input
                     type="text"
                     value={formData.localidad}
-                    onChange={(e) => setFormData({ ...formData, localidad: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, localidad: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
                 <div>
@@ -362,8 +362,8 @@ export default function ClientsPage() {
                 <textarea
                   rows={3}
                   value={formData.observaciones}
-                  onChange={(e) => setFormData({ ...formData, observaciones: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  onChange={(e) => setFormData({ ...formData, observaciones: e.target.value.toUpperCase() })}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 

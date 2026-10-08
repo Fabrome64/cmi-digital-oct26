@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
 import { getMemoryProducts } from '@/lib/memoryDataStore';
+import { sanitizeUppercasePayload } from '@/lib/stringUtils';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -51,19 +52,20 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
   const body = await request.json();
-  const dataToSave = {
+  const rawData = {
     nombre: body.nombre,
     tipo: body.tipo || 'PRODUCTO',
-    categoria: body.categoria || 'General',
+    categoria: body.categoria || 'GENERAL',
     descripcion: body.descripcion || '',
     precio: Number(body.precio) || 0,
     costo: Number(body.costo) || 0,
     imagen: body.imagen || null,
     stock: Number(body.stock) || 0,
-    unidad: body.unidad || 'unidad',
+    unidad: body.unidad || 'UNIDAD',
     activo: body.activo !== undefined ? Boolean(body.activo) : true,
     destacado: Boolean(body.destacado),
   };
+  const dataToSave = sanitizeUppercasePayload(rawData);
 
   try {
     const product = await prisma.product.create({ data: dataToSave });

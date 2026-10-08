@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
 import { getMemoryIncomes, createMemoryIncome } from '@/lib/memoryDataStore';
+import { sanitizeUppercasePayload } from '@/lib/stringUtils';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -49,14 +50,15 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
   const body = await request.json();
-  const dataToSave = {
+  const rawData = {
     clienteId: body.clienteId || null,
-    clienteNombre: body.clienteNombre || 'Cliente Contado',
+    clienteNombre: body.clienteNombre || 'CLIENTE CONTADO',
     servicio: body.servicio || 'SITIO WEB',
     fecha: body.fecha ? new Date(body.fecha) : new Date(),
     importe: Number(body.importe) || 0,
     observaciones: body.observaciones || null,
   };
+  const dataToSave = sanitizeUppercasePayload(rawData);
 
   const memoryIncome = createMemoryIncome({
     ...dataToSave,

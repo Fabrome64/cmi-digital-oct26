@@ -227,8 +227,8 @@ export default function SuppliesPage() {
                   type="text"
                   required
                   value={formData.nombre}
-                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value.toUpperCase() })}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 
@@ -253,8 +253,8 @@ export default function SuppliesPage() {
                   <input
                     type="text"
                     value={formData.proveedor}
-                    onChange={(e) => setFormData({ ...formData, proveedor: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, proveedor: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>
@@ -287,9 +287,9 @@ export default function SuppliesPage() {
                   <input
                     type="text"
                     value={formData.unidad}
-                    onChange={(e) => setFormData({ ...formData, unidad: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, unidad: e.target.value.toUpperCase() })}
                     placeholder="Bobina, Litro, m2"
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>
@@ -309,9 +309,9 @@ export default function SuppliesPage() {
                   <input
                     type="text"
                     value={formData.ubicacion}
-                    onChange={(e) => setFormData({ ...formData, ubicacion: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, ubicacion: e.target.value.toUpperCase() })}
                     placeholder="Estante A-1"
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>

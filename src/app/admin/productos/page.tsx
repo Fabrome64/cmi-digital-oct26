@@ -198,8 +198,8 @@ export default function ProductsAdminPage() {
                   type="text"
                   required
                   value={formData.nombre}
-                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value.toUpperCase() })}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 
@@ -227,8 +227,8 @@ export default function ProductsAdminPage() {
                   <input
                     type="text"
                     value={formData.unidad}
-                    onChange={(e) => setFormData({ ...formData, unidad: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, unidad: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>
@@ -248,8 +248,8 @@ export default function ProductsAdminPage() {
                   <input
                     type="text"
                     value={formData.medidas}
-                    onChange={(e) => setFormData({ ...formData, medidas: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, medidas: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>
@@ -271,8 +271,8 @@ export default function ProductsAdminPage() {
                   rows={3}
                   required
                   value={formData.descripcion}
-                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value.toUpperCase() })}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 

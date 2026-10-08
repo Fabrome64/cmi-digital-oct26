@@ -270,8 +270,8 @@ export default function PresupuestosAdminPage() {
                 <textarea
                   rows={2}
                   value={editObs}
-                  onChange={(e) => setEditObs(e.target.value)}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  onChange={(e) => setEditObs(e.target.value.toUpperCase())}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 

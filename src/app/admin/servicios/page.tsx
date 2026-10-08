@@ -175,8 +175,8 @@ export default function MarketingServicesAdminPage() {
                   type="text"
                   required
                   value={formData.titulo}
-                  onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  onChange={(e) => setFormData({ ...formData, titulo: e.target.value.toUpperCase() })}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 
@@ -185,9 +185,9 @@ export default function MarketingServicesAdminPage() {
                 <input
                   type="text"
                   value={formData.precioOpcional}
-                  onChange={(e) => setFormData({ ...formData, precioOpcional: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, precioOpcional: e.target.value.toUpperCase() })}
                   placeholder="Ej. Desde $45.000 / mes"
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 
@@ -197,8 +197,8 @@ export default function MarketingServicesAdminPage() {
                   rows={3}
                   required
                   value={formData.descripcion}
-                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value.toUpperCase() })}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 

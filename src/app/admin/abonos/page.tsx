@@ -264,9 +264,9 @@ export default function SubscriptionsPage() {
                   type="text"
                   required
                   value={formData.clienteNombre}
-                  onChange={(e) => setFormData({ ...formData, clienteNombre: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, clienteNombre: e.target.value.toUpperCase() })}
                   placeholder="Ej. Inmobiliaria Feliciano"
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 
@@ -277,9 +277,9 @@ export default function SubscriptionsPage() {
                     type="text"
                     required
                     value={formData.sitio}
-                    onChange={(e) => setFormData({ ...formData, sitio: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, sitio: e.target.value.toUpperCase() })}
                     placeholder="Ej. Portal Inmobiliario"
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
                 <div>
@@ -287,9 +287,9 @@ export default function SubscriptionsPage() {
                   <input
                     type="text"
                     value={formData.dominio}
-                    onChange={(e) => setFormData({ ...formData, dominio: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, dominio: e.target.value.toUpperCase() })}
                     placeholder="ejemplo.com"
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>

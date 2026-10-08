@@ -2,12 +2,14 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
 import { updateMemoryClient, deleteMemoryClient } from '@/lib/memoryDataStore';
+import { sanitizeUppercasePayload } from '@/lib/stringUtils';
 
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const session = getAuthSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
-  const body = await request.json();
+  const rawBody = await request.json();
+  const body = sanitizeUppercasePayload(rawBody);
   const memoryUpdated = updateMemoryClient(params.id, body);
 
   try {

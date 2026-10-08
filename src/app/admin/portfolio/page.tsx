@@ -208,8 +208,8 @@ export default function PortfolioAdminPage() {
                   type="text"
                   required
                   value={formData.titulo}
-                  onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  onChange={(e) => setFormData({ ...formData, titulo: e.target.value.toUpperCase() })}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 
@@ -220,8 +220,8 @@ export default function PortfolioAdminPage() {
                     type="text"
                     required
                     value={formData.cliente}
-                    onChange={(e) => setFormData({ ...formData, cliente: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    onChange={(e) => setFormData({ ...formData, cliente: e.target.value.toUpperCase() })}
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
                 <div>
@@ -230,9 +230,9 @@ export default function PortfolioAdminPage() {
                     type="text"
                     required
                     value={formData.categoria}
-                    onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, categoria: e.target.value.toUpperCase() })}
                     placeholder="Inmobiliaria, E-commerce, Salud"
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>
@@ -253,9 +253,9 @@ export default function PortfolioAdminPage() {
                   <input
                     type="text"
                     value={formData.tecnologias}
-                    onChange={(e) => setFormData({ ...formData, tecnologias: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, tecnologias: e.target.value.toUpperCase() })}
                     placeholder="Next.js, Tailwind, SQLite"
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               </div>
@@ -277,8 +277,8 @@ export default function PortfolioAdminPage() {
                   rows={3}
                   required
                   value={formData.descripcion}
-                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  onChange={(e) => setFormData({ ...formData, descripcion: e.target.value.toUpperCase() })}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 

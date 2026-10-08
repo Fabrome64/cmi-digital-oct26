@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
+import { sanitizeUppercasePayload } from '@/lib/stringUtils';
 
 export async function GET() {
   const session = getAuthSession();
@@ -23,20 +24,23 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
+    const rawData = {
+      clienteId: body.clienteId || null,
+      clienteNombre: body.clienteNombre,
+      sitio: body.sitio,
+      dominio: body.dominio || null,
+      hosting: body.hosting || null,
+      fechaInicio: new Date(body.fechaInicio),
+      fechaVencimiento: new Date(body.fechaVencimiento),
+      importe: Number(body.importe),
+      periodicidad: body.periodicidad || 'Mensual',
+      estado: body.estado || 'Activo',
+      observaciones: body.observaciones || null,
+    };
+    const dataToSave = sanitizeUppercasePayload(rawData);
+
     const subscription = await prisma.webSubscription.create({
-      data: {
-        clienteId: body.clienteId || null,
-        clienteNombre: body.clienteNombre,
-        sitio: body.sitio,
-        dominio: body.dominio || null,
-        hosting: body.hosting || null,
-        fechaInicio: new Date(body.fechaInicio),
-        fechaVencimiento: new Date(body.fechaVencimiento),
-        importe: Number(body.importe),
-        periodicidad: body.periodicidad || 'Mensual',
-        estado: body.estado || 'Activo',
-        observaciones: body.observaciones || null,
-      },
+      data: dataToSave,
     });
 
     return NextResponse.json(subscription, { status: 201 });

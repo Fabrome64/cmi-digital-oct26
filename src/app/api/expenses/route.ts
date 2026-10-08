@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
 import { getMemoryExpenses } from '@/lib/memoryDataStore';
+import { sanitizeUppercasePayload } from '@/lib/stringUtils';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -59,16 +60,17 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
   const body = await request.json();
-  const dataToSave = {
+  const rawData = {
     fecha: parseLocalDate(body.fecha),
-    concepto: body.concepto || 'Gasto General',
-    categoria: body.categoria || 'Otros',
+    concepto: body.concepto || 'GASTO GENERAL',
+    categoria: body.categoria || 'OTROS',
     proveedor: body.proveedor || null,
     monto: Number(body.monto) || 0,
-    medioPago: body.medioPago || 'Transferencia',
+    medioPago: body.medioPago || 'TRANSFERENCIA',
     comprobante: body.comprobante || null,
     observaciones: body.observaciones || null,
   };
+  const dataToSave = sanitizeUppercasePayload(rawData);
 
   try {
     const expense = await prisma.expense.create({ data: dataToSave });

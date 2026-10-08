@@ -311,9 +311,9 @@ export default function IncomesAdminPage() {
                     type="text"
                     required
                     value={formData.clienteNombre}
-                    onChange={(e) => setFormData({ ...formData, clienteNombre: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, clienteNombre: e.target.value.toUpperCase() })}
                     placeholder="Ej. Juan Pérez / Empresa SRL"
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                   />
                 </div>
               )}
@@ -367,9 +367,9 @@ export default function IncomesAdminPage() {
                 <textarea
                   rows={3}
                   value={formData.observaciones}
-                  onChange={(e) => setFormData({ ...formData, observaciones: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, observaciones: e.target.value.toUpperCase() })}
                   placeholder="Detalles adicionales, número de recibo o comprobante..."
-                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] uppercase"
                 />
               </div>
 
