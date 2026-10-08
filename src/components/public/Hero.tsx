@@ -25,6 +25,16 @@ export default function Hero({
       <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-yellow-300 rounded-full blur-3xl opacity-50 pointer-events-none" />
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-blue-300 rounded-full blur-3xl opacity-30 pointer-events-none" />
 
+      {/* Left Margin Blue Memphis Geometric Pattern Overlay (50% Opacity) */}
+      <div className="absolute top-0 left-0 bottom-0 w-72 sm:w-96 lg:w-[35%] opacity-50 pointer-events-none z-0 mix-blend-multiply overflow-hidden">
+        <div 
+          className="w-full h-full bg-contain bg-left-top bg-repeat-y"
+          style={{ backgroundImage: "url('/hero-pattern-blue.png')" }}
+        />
+        {/* Soft horizontal gradient mask on right edge for seamless transition */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#FFD400]" />
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
