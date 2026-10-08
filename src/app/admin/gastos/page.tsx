@@ -1,10 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, DollarSign, Calendar, Tag, Trash2, Edit2, X, TrendingDown } from 'lucide-react';
+import { Plus, DollarSign, Calendar, Tag, Trash2, Edit2, X, TrendingDown, Home } from 'lucide-react';
 import { ExpenseType } from '@/types';
-
 import SuccessToast from '@/components/admin/SuccessToast';
+
+const CATEGORY_OPTIONS = [
+  'Insumos',
+  'Servicios',
+  'Publicidad',
+  'Hosting',
+  'Software',
+  'Equipamiento',
+  'Transporte',
+  'Gastos Hogar',
+  'Otros',
+];
 
 export default function ExpensesPage() {
   const [expenses, setExpenses] = useState<ExpenseType[]>([]);
@@ -13,8 +24,33 @@ export default function ExpensesPage() {
   const [editingExp, setEditingExp] = useState<ExpenseType | null>(null);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
+  const getTodayInput = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const getCleanDateInput = (dateVal: any) => {
+    if (!dateVal) return getTodayInput();
+    const str = typeof dateVal === 'string' ? dateVal : new Date(dateVal).toISOString();
+    return str.split('T')[0];
+  };
+
+  const formatExpenseDate = (dateVal: string | Date) => {
+    if (!dateVal) return '-';
+    const str = typeof dateVal === 'string' ? dateVal : new Date(dateVal).toISOString();
+    const cleanDate = str.split('T')[0];
+    const parts = cleanDate.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return cleanDate;
+  };
+
   const [formData, setFormData] = useState({
-    fecha: new Date().toISOString().split('T')[0],
+    fecha: getTodayInput(),
     concepto: '',
     categoria: 'Insumos',
     proveedor: '',
@@ -42,7 +78,7 @@ export default function ExpensesPage() {
   const handleOpenCreate = () => {
     setEditingExp(null);
     setFormData({
-      fecha: new Date().toISOString().split('T')[0],
+      fecha: getTodayInput(),
       concepto: '',
       categoria: 'Insumos',
       proveedor: '',
@@ -57,7 +93,7 @@ export default function ExpensesPage() {
   const handleOpenEdit = (exp: ExpenseType) => {
     setEditingExp(exp);
     setFormData({
-      fecha: new Date(exp.fecha).toISOString().split('T')[0],
+      fecha: getCleanDateInput(exp.fecha),
       concepto: exp.concepto || '',
       categoria: exp.categoria || 'Insumos',
       proveedor: exp.proveedor || '',
@@ -125,12 +161,12 @@ export default function ExpensesPage() {
       {toastMsg && (
         <SuccessToast message={toastMsg} onClose={() => setToastMsg(null)} />
       )}
-      
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-extrabold text-gray-900">Gestión Financiera de Gastos</h2>
-          <p className="text-sm text-gray-500">Registro operativo de egresos, insumos, servicios y equipamiento</p>
+          <p className="text-sm text-gray-500">Registro operativo de egresos, insumos, servicios, gastos del hogar y equipamiento</p>
         </div>
 
         <button
@@ -191,21 +227,25 @@ export default function ExpensesPage() {
               <tbody className="divide-y divide-gray-200 text-sm">
                 {expenses.map((exp) => (
                   <tr key={exp.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="p-4 text-xs font-bold text-gray-700">
-                      {new Date(exp.fecha).toLocaleDateString('es-AR')}
+                    <td className="p-4 text-xs font-bold text-gray-700 whitespace-nowrap">
+                      {formatExpenseDate(exp.fecha)}
                     </td>
                     <td className="p-4">
                       <div className="font-extrabold text-gray-900">{exp.concepto}</div>
-                      <span className="bg-gray-100 text-gray-700 text-[11px] font-semibold px-2 py-0.5 rounded border border-gray-200">
+                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded border ${
+                        exp.categoria === 'Gastos Hogar'
+                          ? 'bg-amber-50 text-amber-800 border-amber-200'
+                          : 'bg-gray-100 text-gray-700 border-gray-200'
+                      }`}>
                         {exp.categoria}
                       </span>
                     </td>
                     <td className="p-4 text-xs font-medium text-gray-600">{exp.proveedor || '-'}</td>
-                    <td className="p-4 font-black text-red-600 text-base">
+                    <td className="p-4 font-black text-red-600 text-base whitespace-nowrap">
                       ${exp.monto.toLocaleString('es-AR')}
                     </td>
                     <td className="p-4 text-xs font-semibold text-gray-700">{exp.medioPago}</td>
-                    <td className="p-4 text-right space-x-2">
+                    <td className="p-4 text-right space-x-2 whitespace-nowrap">
                       <button onClick={() => handleOpenEdit(exp)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
                         <Edit2 className="w-4 h-4" />
                       </button>
@@ -247,20 +287,17 @@ export default function ExpensesPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Categoría</label>
+                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Categoría *</label>
                   <select
                     value={formData.categoria}
                     onChange={(e) => setFormData({ ...formData, categoria: e.target.value })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] font-semibold text-gray-800"
                   >
-                    <option value="Insumos">Insumos</option>
-                    <option value="Servicios">Servicios</option>
-                    <option value="Publicidad">Publicidad</option>
-                    <option value="Hosting">Hosting</option>
-                    <option value="Software">Software</option>
-                    <option value="Equipamiento">Equipamiento</option>
-                    <option value="Transporte">Transporte</option>
-                    <option value="Otros">Otros</option>
+                    {CATEGORY_OPTIONS.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
@@ -272,19 +309,19 @@ export default function ExpensesPage() {
                   required
                   value={formData.concepto}
                   onChange={(e) => setFormData({ ...formData, concepto: e.target.value })}
-                  placeholder="Ej. Compra de tintas mimaki 1L"
+                  placeholder="Ej. Compra de tintas / Servicio luz"
                   className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Proveedor</label>
+                  <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Proveedor / Entidad</label>
                   <input
                     type="text"
                     value={formData.proveedor}
                     onChange={(e) => setFormData({ ...formData, proveedor: e.target.value })}
-                    placeholder="Ej. GrafiTech"
+                    placeholder="Ej. GrafiTech / Particular"
                     className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
                   />
                 </div>
@@ -293,9 +330,11 @@ export default function ExpensesPage() {
                   <input
                     type="number"
                     required
+                    step="0.01"
+                    min="0.01"
                     value={formData.monto}
                     onChange={(e) => setFormData({ ...formData, monto: Number(e.target.value) })}
-                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF]"
+                    className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:border-[#0066FF] font-bold text-gray-900"
                   />
                 </div>
               </div>

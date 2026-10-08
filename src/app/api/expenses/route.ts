@@ -22,6 +22,15 @@ CREATE TABLE IF NOT EXISTS "Expense" (
   CONSTRAINT "Expense_pkey" PRIMARY KEY ("id")
 );`;
 
+function parseLocalDate(fechaVal: any): Date {
+  if (!fechaVal) return new Date();
+  if (typeof fechaVal === 'string') {
+    if (fechaVal.includes('T')) return new Date(fechaVal);
+    return new Date(`${fechaVal}T12:00:00`);
+  }
+  return new Date(fechaVal);
+}
+
 export async function GET() {
   const session = getAuthSession();
   if (!session) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
@@ -51,7 +60,7 @@ export async function POST(request: Request) {
 
   const body = await request.json();
   const dataToSave = {
-    fecha: body.fecha ? new Date(body.fecha) : new Date(),
+    fecha: parseLocalDate(body.fecha),
     concepto: body.concepto || 'Gasto General',
     categoria: body.categoria || 'Otros',
     proveedor: body.proveedor || null,
