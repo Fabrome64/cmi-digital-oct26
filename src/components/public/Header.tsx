@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, Facebook, Instagram, LogIn, Monitor } from 'lucide-react';
+import { Menu, X, Facebook, Instagram } from 'lucide-react';
 
 interface HeaderProps {
   companyName?: string;
@@ -62,7 +62,7 @@ export default function Header({
             ))}
           </nav>
 
-          {/* RIGHT: Social Icons & Register/Login CTA */}
+          {/* RIGHT: Social Icons */}
           <div className="hidden lg:flex items-center space-x-4">
             <a
               href={facebookUrl}
@@ -82,25 +82,10 @@ export default function Header({
             >
               <Instagram className="w-5 h-5" />
             </a>
-
-            <Link
-              href="/admin/login"
-              className="inline-flex items-center space-x-2 bg-gray-900 hover:bg-black text-[#FFD400] font-bold px-4 py-2 rounded-lg shadow transition-transform transform hover:-translate-y-0.5 text-sm"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>REGISTRO / ACCESO</span>
-            </Link>
           </div>
 
           {/* Mobile Hamburger Button */}
           <div className="flex lg:hidden items-center space-x-2">
-            <Link
-              href="/admin/login"
-              className="p-2 text-gray-900 bg-yellow-400 rounded-lg"
-              title="Acceso Admin"
-            >
-              <LogIn className="w-5 h-5" />
-            </Link>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="p-2 rounded-lg text-gray-900 hover:bg-yellow-400 focus:outline-none"
@@ -145,15 +130,6 @@ export default function Header({
                 <Instagram className="w-5 h-5" />
               </a>
             </div>
-
-            <Link
-              href="/admin/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="bg-gray-900 text-[#FFD400] font-bold px-4 py-2.5 rounded-lg text-sm flex items-center space-x-2"
-            >
-              <LogIn className="w-4 h-4" />
-              <span>Acceso Panel</span>
-            </Link>
           </div>
         </div>
       )}
