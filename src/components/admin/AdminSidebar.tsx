@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Users, CreditCard, Box, Package, DollarSign, Wallet,
   FolderKanban, Share2, FileText, Image as ImageIcon, Settings, LogOut,
-  ExternalLink, Menu, X, ShieldAlert
+  ExternalLink, Menu, X, ShieldAlert, Calculator
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -16,6 +16,7 @@ export default function AdminSidebar() {
 
   const menuItems = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+    { name: 'Presupuestar', href: '/admin/presupuestar', icon: Calculator },
     { name: 'Clientes', href: '/admin/clientes', icon: Users },
     { name: 'Ingresos', href: '/admin/ingresos', icon: Wallet },
     { name: 'Gastos', href: '/admin/gastos', icon: DollarSign },

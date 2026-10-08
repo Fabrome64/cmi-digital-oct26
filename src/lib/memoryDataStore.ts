@@ -292,6 +292,49 @@ export function deleteMemoryIncome(id: string) {
   return true;
 }
 
+// 9. BUDGET MATERIALS STORE
+const defaultBudgetMaterials = [
+  { id: 'bm-1', nombre: 'LONA FRONT 440G', rubro: 'GRAN FORMATO', unidadCalculo: 'METRO CUADRADO', precioUnitario: 12500, observaciones: 'Impresión gran formato alta resolución', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: 'bm-2', nombre: 'VINILO BRILLO / MATE', rubro: 'GRAN FORMATO', unidadCalculo: 'METRO CUADRADO', precioUnitario: 11000, observaciones: 'Apto exterior y vidrieras', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: 'bm-3', nombre: 'MICROPERFORADO', rubro: 'GRAN FORMATO', unidadCalculo: 'METRO CUADRADO', precioUnitario: 15500, observaciones: 'Ideal para lunetas de vehículos y vidrieras', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: 'bm-4', nombre: 'LONA BACKLIGHT', rubro: 'GRAN FORMATO', unidadCalculo: 'METRO CUADRADO', precioUnitario: 18000, observaciones: 'Para carteles luminosos', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: 'bm-5', nombre: 'BAJADA A3 COLOR 300G', rubro: 'IMPRENTA GRÁFICA', unidadCalculo: 'UNIDAD', precioUnitario: 1200, observaciones: 'Papel ilustración 300g doble faz', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: 'bm-6', nombre: 'FOLLETOS 10X15 (1000 UNID)', rubro: 'IMPRENTA GRÁFICA', unidadCalculo: 'UNIDAD', precioUnitario: 35000, observaciones: 'Frente full color, dorso b/n', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: 'bm-7', nombre: 'CANVAS TEXTURADO', rubro: 'GRAN FORMATO', unidadCalculo: 'METRO CUADRADO', precioUnitario: 22000, observaciones: 'Lienzo de cuadro con bastidor opcional', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: 'bm-8', nombre: 'PERFIL DE ALUMINIO / BASTIDOR', rubro: 'GRAN FORMATO', unidadCalculo: 'METRO LINEAL', precioUnitario: 8500, observaciones: 'Cálculo por metro lineal de estructura', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+];
+
+let memoryBudgetMaterials: any[] = loadData('cmi_budget_materials.json', defaultBudgetMaterials);
+
+export function getMemoryBudgetMaterials() {
+  memoryBudgetMaterials = loadData('cmi_budget_materials.json', memoryBudgetMaterials);
+  return [...memoryBudgetMaterials];
+}
+
+export function createMemoryBudgetMaterial(data: any) {
+  const item = {
+    id: `bm-${Date.now()}`,
+    ...data,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  memoryBudgetMaterials = [item, ...memoryBudgetMaterials];
+  saveData('cmi_budget_materials.json', memoryBudgetMaterials);
+  return item;
+}
+
+export function updateMemoryBudgetMaterial(id: string, data: any) {
+  memoryBudgetMaterials = memoryBudgetMaterials.map((m) => (m.id === id ? { ...m, ...data, updatedAt: new Date().toISOString() } : m));
+  saveData('cmi_budget_materials.json', memoryBudgetMaterials);
+  return memoryBudgetMaterials.find((m) => m.id === id);
+}
+
+export function deleteMemoryBudgetMaterial(id: string) {
+  memoryBudgetMaterials = memoryBudgetMaterials.filter((m) => m.id !== id);
+  saveData('cmi_budget_materials.json', memoryBudgetMaterials);
+  return true;
+}
+
 export function clearAllMemoryStores() {
   memoryClients = [];
   saveData('cmi_clients.json', []);
@@ -309,5 +352,7 @@ export function clearAllMemoryStores() {
   saveData('cmi_portfolio.json', []);
   memoryIncomes = [];
   saveData('cmi_incomes.json', []);
+  memoryBudgetMaterials = [];
+  saveData('cmi_budget_materials.json', []);
 }
 
