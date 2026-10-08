@@ -248,6 +248,7 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
     }
 
     function resize() {
+      if (!host) return;
       const r = host.getBoundingClientRect();
       if (r.width === 0 || r.height === 0) return;
       renderer.setSize(r.width, r.height);
@@ -260,6 +261,7 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
     resizeObserver.observe(host);
 
     const onMove = (e: PointerEvent) => {
+      if (!host) return;
       const r = host.getBoundingClientRect();
       pointer.set(
         THREE.MathUtils.clamp(((e.clientX - r.left) / r.width) * 2 - 1, -1, 1),
