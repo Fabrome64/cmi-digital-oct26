@@ -1,7 +1,12 @@
 'use client';
 
-import { ArrowRight, MessageSquare, Sparkles, CheckCircle2 } from 'lucide-react';
+import { useState } from 'react';
+import dynamic from 'next/dynamic';
+import { Sparkles, MessageSquare } from 'lucide-react';
 import { getWhatsAppUrl } from '@/lib/whatsapp';
+
+// Dynamic import for Three.js canvas to avoid SSR issues
+const KiroCanvas = dynamic(() => import('./KiroCanvas'), { ssr: false });
 
 interface HeroProps {
   title?: string;
@@ -11,150 +16,97 @@ interface HeroProps {
 }
 
 export default function Hero({
-  title = 'CMI DIGITAL',
-  subtitle = 'Soluciones que hacen visible tu negocio.',
-  text = 'Impresiones, marketing digital y desarrollo web para llevar tu empresa al próximo nivel.',
+  title = 'La próxima gran idea empieza contigo.',
+  subtitle = 'Impresiones, marketing digital y desarrollo web para llevar tu marca al próximo nivel.',
   whatsapp = '5493458659792',
 }: HeroProps) {
+  const [sayHiTrigger, setSayHiTrigger] = useState(0);
+  const [responseText, setResponseText] = useState('');
   const waUrl = getWhatsAppUrl(whatsapp, 'GENERAL');
 
+  const handleLaunch = () => {
+    setSayHiTrigger((prev) => prev + 1);
+    setResponseText('🚀 ¡Despegue iniciado! Kiro está listo para llevar tu proyecto al próximo nivel.');
+    setTimeout(() => setResponseText(''), 5000);
+  };
+
   return (
-    <section id="inicio" className="relative bg-gradient-to-b from-[#FFD400] via-[#FFE566] to-white pt-12 pb-24 lg:pt-20 lg:pb-32 overflow-hidden">
-      
-      {/* Background Decorative Accents */}
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-yellow-300 rounded-full blur-3xl opacity-50 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-blue-300 rounded-full blur-3xl opacity-30 pointer-events-none" />
+    <section
+      id="inicio"
+      className="hero relative bg-[#243eff] text-white overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-28 min-h-[90vh] flex items-center"
+    >
+      {/* Halos & Glows */}
+      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#d2ff32] opacity-20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-sky-300 opacity-25 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-[30%] left-[40%] w-[400px] h-[400px] bg-white opacity-15 rounded-full blur-[100px] pointer-events-none" />
 
-      {/* Left Margin Blue Memphis Geometric Pattern Overlay (50% Opacity) */}
-      <div className="absolute top-0 left-0 bottom-0 w-72 sm:w-96 lg:w-[35%] opacity-50 pointer-events-none z-0 mix-blend-multiply overflow-hidden">
-        <div 
-          className="w-full h-full bg-contain bg-left-top bg-repeat-y"
-          style={{ backgroundImage: "url('/hero-pattern-blue.png')" }}
-        />
-        {/* Soft horizontal gradient mask on right edge for seamless transition */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#FFD400]" />
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
-          {/* Left Hero Content */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center space-x-2 bg-gray-900 text-[#FFD400] px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-md">
-              <Sparkles className="w-4 h-4 text-yellow-400" />
-              <span>IMPRESIONES · MARKETING · DESARROLLO WEB</span>
+          {/* Left Column: Text & CTAs */}
+          <div className="lg:col-span-7 space-y-6 text-left">
+            <div className="inline-flex items-center space-x-2 bg-black/30 backdrop-blur-md border border-[#d2ff32]/30 text-[#d2ff32] px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold tracking-wide font-dmsans">
+              <Sparkles className="w-4 h-4 text-[#d2ff32]" />
+              <span>CMI DIGITAL · IMPRESIONES · MARKETING · WEB</span>
             </div>
 
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold text-gray-900 tracking-tight leading-none">
-              {title}
+            {/* H1 Title with clamp font size, Manrope 800, line-height .89 */}
+            <h1
+              className="font-manrope font-extrabold text-white tracking-tight leading-[0.89]"
+              style={{ fontSize: 'clamp(52px, 7.5vw, 120px)' }}
+            >
+              {title.includes('empieza contigo') ? (
+                <>
+                  La próxima gran idea <span className="text-[#d2ff32]">empieza contigo.</span>
+                </>
+              ) : (
+                title
+              )}
             </h1>
 
-            <p className="text-2xl sm:text-3xl font-extrabold text-gray-800 leading-snug">
+            {/* Subtitle in DM Sans font */}
+            <p className="font-dmsans text-[20px] lg:text-[24px] text-blue-100 font-normal max-w-2xl leading-relaxed">
               {subtitle}
             </p>
 
-            <p className="text-lg sm:text-xl text-gray-700 font-normal max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              {text}
-            </p>
-
-            {/* Bullet Highlights */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-left font-semibold text-sm text-gray-800 max-w-xl mx-auto lg:mx-0">
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-5 h-5 text-gray-900 flex-shrink-0" />
-                <span>Diseño Profesional</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-5 h-5 text-gray-900 flex-shrink-0" />
-                <span>Gran Formato</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-5 h-5 text-gray-900 flex-shrink-0" />
-                <span>Estrategia Digital</span>
-              </div>
-            </div>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-6">
-              <a
-                href="#diseno-web"
-                className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-gray-900 hover:bg-black text-[#FFD400] font-extrabold px-8 py-4 rounded-xl shadow-xl transition-all transform hover:-translate-y-1 text-base sm:text-lg"
+            {/* Buttons */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+              <button
+                id="action"
+                onClick={handleLaunch}
+                className="w-full sm:w-auto h-[60px] lg:h-[66px] px-8 bg-[#d2ff32] hover:bg-[#c2ef22] text-[#101b22] font-dmsans font-extrabold text-lg sm:text-xl rounded-2xl shadow-2xl hover:shadow-[#d2ff32]/40 transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center border-none cursor-pointer"
               >
-                <span>CONOCÉ NUESTROS SERVICIOS</span>
-                <ArrowRight className="w-5 h-5 text-yellow-400" />
-              </a>
+                Iniciar despegue
+              </button>
 
               <a
-                href="#contacto"
-                className="w-full sm:w-auto inline-flex items-center justify-center space-x-3 bg-white hover:bg-gray-100 text-gray-900 border-2 border-gray-900 font-extrabold px-8 py-4 rounded-xl shadow-lg transition-all transform hover:-translate-y-1 text-base sm:text-lg"
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto h-[60px] lg:h-[66px] px-8 bg-white/10 hover:bg-white/20 text-white border-2 border-white/30 font-dmsans font-bold text-lg rounded-2xl backdrop-blur-sm transition-all transform hover:-translate-y-1 flex items-center justify-center space-x-2 text-center"
               >
-                <MessageSquare className="w-5 h-5 text-gray-900" />
-                <span>CONTACTANOS</span>
+                <MessageSquare className="w-5 h-5 text-[#d2ff32]" />
+                <span>Contactar ahora</span>
               </a>
             </div>
+
+            {/* Response status paragraph */}
+            {responseText && (
+              <p id="response" className="font-dmsans text-sm font-semibold text-[#d2ff32] animate-fade-in pt-1">
+                {responseText}
+              </p>
+            )}
+
+            {/* Hidden metrics element as requested by spec */}
+            <span id="metrics" className="sr-only">
+              Cargando métricas de renderizado...
+            </span>
           </div>
 
-          {/* Right Hero Graphic Showcase */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative mx-auto max-w-md lg:max-w-none">
-              
-              {/* Outer Card Wrapper */}
-              <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-2xl border-4 border-gray-900 space-y-6 transform lg:rotate-1 hover:rotate-0 transition-transform duration-300">
-                
-                {/* Header Badge */}
-                <div className="flex items-center justify-between border-b pb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-[#FFD400] text-gray-900 rounded-lg flex items-center justify-center font-extrabold">
-                      CMI
-                    </div>
-                    <div>
-                      <h4 className="font-extrabold text-gray-900 text-base">CMI DIGITAL</h4>
-                      <p className="text-xs text-gray-500 font-medium">San José de Feliciano, Entre Ríos</p>
-                    </div>
-                  </div>
-                  <span className="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full animate-pulse">
-                    ● En línea
-                  </span>
-                </div>
-
-                {/* 3 Service Cards preview */}
-                <div className="space-y-3">
-                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-2xl flex items-center justify-between">
-                    <div>
-                      <span className="text-xs font-bold text-blue-700 uppercase tracking-wider">Desarrollo Web</span>
-                      <h5 className="font-extrabold text-gray-900 text-sm">Sitios Web & PWA 24/7</h5>
-                    </div>
-                    <span className="text-blue-600 font-bold text-xs bg-white px-2.5 py-1 rounded-lg border border-blue-200">Moderno</span>
-                  </div>
-
-                  <div className="p-4 bg-cyan-50 border border-cyan-200 rounded-2xl flex items-center justify-between">
-                    <div>
-                      <span className="text-xs font-bold text-cyan-700 uppercase tracking-wider">Marketing Digital</span>
-                      <h5 className="font-extrabold text-gray-900 text-sm">Gestión de Redes & Ads</h5>
-                    </div>
-                    <span className="text-cyan-600 font-bold text-xs bg-white px-2.5 py-1 rounded-lg border border-cyan-200">Alcance</span>
-                  </div>
-
-                  <div className="p-4 bg-yellow-50 border border-yellow-300 rounded-2xl flex items-center justify-between">
-                    <div>
-                      <span className="text-xs font-bold text-yellow-800 uppercase tracking-wider">Impresión Gran Formato</span>
-                      <h5 className="font-extrabold text-gray-900 text-sm">Cartelería, Lonas & Ploteos</h5>
-                    </div>
-                    <span className="text-yellow-800 font-bold text-xs bg-white px-2.5 py-1 rounded-lg border border-yellow-300">Calidad</span>
-                  </div>
-                </div>
-
-                {/* WhatsApp Quick Link */}
-                <a
-                  href={waUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white font-extrabold py-3 rounded-xl shadow transition-colors text-sm"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>Consultar por WhatsApp Directo</span>
-                </a>
-              </div>
-
+          {/* Right Column: 3D Kiro Character Canvas */}
+          <div className="lg:col-span-5 relative flex items-center justify-center">
+            <div className="w-full relative">
+              <KiroCanvas sayHiTrigger={sayHiTrigger} />
             </div>
           </div>
 
