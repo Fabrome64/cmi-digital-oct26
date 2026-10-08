@@ -16,8 +16,8 @@ interface HeroProps {
 }
 
 export default function Hero({
-  title = 'La próxima gran idea empieza contigo.',
-  subtitle = 'Impresiones, marketing digital y desarrollo web para llevar tu marca al próximo nivel.',
+  title = 'Nacimos para ir más lejos.',
+  subtitle = 'La próxima gran idea empieza contigo. Impresiones, marketing digital y desarrollo web para llevar tu empresa al siguiente nivel.',
   whatsapp = '5493458659792',
 }: HeroProps) {
   const [sayHiTrigger, setSayHiTrigger] = useState(0);
@@ -26,51 +26,70 @@ export default function Hero({
 
   const handleLaunch = () => {
     setSayHiTrigger((prev) => prev + 1);
-    setResponseText('🚀 ¡Despegue iniciado! Kiro está listo para llevar tu proyecto al próximo nivel.');
+    setResponseText('🚀 ¡Despegue iniciado! Kiro está listo para llevar tu proyecto al espacio.');
     setTimeout(() => setResponseText(''), 5000);
   };
 
   return (
     <section
       id="inicio"
-      className="hero relative bg-[#243eff] text-white overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-28 min-h-[90vh] flex items-center"
+      className="hero relative bg-[#243eff] text-white overflow-hidden pt-8 pb-16 lg:pt-12 lg:pb-24 min-h-[92vh] flex items-center"
     >
-      {/* Halos & Glows */}
-      <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-[#d2ff32] opacity-20 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-sky-300 opacity-25 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute top-[30%] left-[40%] w-[400px] h-[400px] bg-white opacity-15 rounded-full blur-[100px] pointer-events-none" />
+      {/* Background Radial Halos & Glows */}
+      <div className="absolute top-[-10%] left-[-10%] w-[550px] h-[550px] bg-[#d2ff32] opacity-20 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-5%] w-[650px] h-[650px] bg-sky-300 opacity-25 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-[25%] left-[35%] w-[450px] h-[450px] bg-white opacity-15 rounded-full blur-[110px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        
+        {/* Top Header Navigation matching reference mockup */}
+        <div className="flex items-center justify-between pb-8 lg:pb-12">
+          <div className="flex items-center space-x-3">
+            <span className="text-[#d2ff32] text-2xl font-black">✳</span>
+            <span className="font-poppins font-extrabold text-2xl tracking-wider text-white uppercase">
+              CMI DIGITAL
+            </span>
+          </div>
+          <div className="hidden md:flex items-center space-x-8 font-dmsans text-sm font-medium text-blue-100">
+            <a href="#servicios" className="hover:text-white transition-colors">Concepto</a>
+            <a href="#nosotros" className="hover:text-white transition-colors">Experiencia</a>
+          </div>
+          <a
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-5 py-2.5 rounded-full border border-white/40 hover:border-white text-white font-dmsans text-sm font-semibold transition-all hover:bg-white/10"
+          >
+            Descubrir
+          </a>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center">
           
           {/* Left Column: Text & CTAs */}
-          <div className="lg:col-span-7 space-y-6 text-left">
+          <div className="lg:col-span-6 xl:col-span-6 space-y-6 text-left z-10">
             <div className="inline-flex items-center space-x-2 bg-black/30 backdrop-blur-md border border-[#d2ff32]/30 text-[#d2ff32] px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold tracking-wide font-dmsans">
               <Sparkles className="w-4 h-4 text-[#d2ff32]" />
-              <span>CMI DIGITAL · IMPRESIONES · MARKETING · WEB</span>
+              <span>CMI DIGITAL · ROBOT 3D ANIMADO</span>
             </div>
 
-            {/* H1 Title with clamp font size, Manrope 800, line-height .89 */}
+            {/* H1 Title with Poppins Bold font */}
             <h1
-              className="font-manrope font-extrabold text-white tracking-tight leading-[0.89]"
-              style={{ fontSize: 'clamp(52px, 7.5vw, 120px)' }}
+              className="font-poppins font-extrabold text-white tracking-tight leading-[0.92]"
+              style={{ fontSize: 'clamp(46px, 6.2vw, 98px)' }}
             >
-              {title.includes('empieza contigo') ? (
-                <>
-                  La próxima gran idea <span className="text-[#d2ff32]">empieza contigo.</span>
-                </>
-              ) : (
-                title
-              )}
+              Nacimos <br />
+              para <span className="text-[#d2ff32]">ir más</span> <br />
+              <span className="text-[#d2ff32]">lejos.</span>
             </h1>
 
-            {/* Subtitle in DM Sans font */}
-            <p className="font-dmsans text-[20px] lg:text-[24px] text-blue-100 font-normal max-w-2xl leading-relaxed">
+            {/* Subtitle */}
+            <p className="font-dmsans text-[19px] sm:text-[22px] text-blue-100 font-normal max-w-lg leading-relaxed pt-1">
               {subtitle}
             </p>
 
-            {/* Buttons */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 pt-3">
               <button
                 id="action"
                 onClick={handleLaunch}
@@ -103,9 +122,9 @@ export default function Hero({
             </span>
           </div>
 
-          {/* Right Column: 3D Kiro Character Canvas */}
-          <div className="lg:col-span-5 relative flex items-center justify-center">
-            <div className="w-full relative">
+          {/* Right Column: 3D Kiro Robot Canvas on Right Margin */}
+          <div className="lg:col-span-6 xl:col-span-6 relative flex items-center justify-center lg:justify-end">
+            <div className="w-full max-w-[550px] lg:max-w-[650px] relative">
               <KiroCanvas sayHiTrigger={sayHiTrigger} />
             </div>
           </div>

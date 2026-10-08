@@ -40,6 +40,10 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
     let measured = 0;
     let meanFrame = 0;
 
+    let targetScroll = typeof window !== 'undefined' ? window.scrollY : 0;
+    let currentScroll = targetScroll;
+    let walkPhase = 0;
+
     const pointer = new THREE.Vector2(0, 0);
     const smooth = new THREE.Vector2(0, 0);
 
@@ -57,7 +61,7 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
     renderer.toneMappingExposure = 0.76;
     renderer.setClearColor(0x000000, 0);
 
-    // Apply canvas CSS filter as per demo prompt: filter: saturate(1.28) contrast(1.045)
+    // Canvas CSS filter as per spec design
     renderer.domElement.style.filter = 'saturate(1.28) contrast(1.045)';
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
@@ -68,7 +72,7 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
-    camera.position.set(0, 0.12, 7.8);
+    camera.position.set(0, 0.1, 7.2);
     camera.lookAt(0, 0, 0);
 
     const group = new THREE.Group();
@@ -132,6 +136,7 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
     const eyes: THREE.Mesh[] = [];
     const ears: THREE.Group[] = [];
     const arms: THREE.Group[] = [];
+    const legs: THREE.Group[] = [];
 
     // Spherical helmet & visor
     sphere(1.13, shell, head, [0, 0, 0], [1, 1, 0.93]);
@@ -169,7 +174,7 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
       box(0.09, 0.17, 0.04, 0.02, lime, group, [-0.18 + i * 0.18, -0.92, 0.535]);
     }
 
-    // Arms, Gloves, Boots
+    // Arms & Gloves
     for (const side of [-1, 1]) {
       const arm = new THREE.Group();
       arm.position.set(side * 0.66, -0.65, 0);
@@ -181,10 +186,18 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
       capsule(0.23, 0.3, shell, arm, [side * 0.1, -0.28, 0]);
       mesh(new THREE.TorusGeometry(0.215, 0.055, 10, 32), lime, arm, [side * 0.12, -0.54, 0]).rotation.x = Math.PI / 2;
       sphere(0.23, shell, arm, [side * 0.12, -0.66, 0.025], [1, 1.05, 1]);
+    }
 
-      capsule(0.23, 0.3, joint, group, [side * 0.33, -1.62, 0]);
-      box(0.54, 0.46, 0.8, 0.16, shell, group, [side * 0.34, -1.93, 0.14]);
-      box(0.55, 0.09, 0.79, 0.04, lime, group, [side * 0.34, -2.14, 0.14]);
+    // Legs & Boots (Grouped for walking rotation)
+    for (const side of [-1, 1]) {
+      const leg = new THREE.Group();
+      leg.position.set(side * 0.34, -1.4, 0);
+      group.add(leg);
+      legs.push(leg);
+
+      capsule(0.23, 0.28, joint, leg, [0, -0.22, 0]);
+      box(0.54, 0.46, 0.8, 0.16, shell, leg, [0, -0.53, 0.14]);
+      box(0.55, 0.09, 0.79, 0.04, lime, leg, [0, -0.74, 0.14]);
     }
 
     group.rotation.set(0.04, -0.2, 0.12);
@@ -198,9 +211,33 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
         eye.scale.y = blink;
         eye.position.x = baseEyes[i] + p.x * 0.025;
       });
-      group.position.y = Math.sin(t * 1.2) * 0.07 + (Math.sin(Math.min(gesture, 1) * Math.PI) * 0.35);
+
+      // Scroll-driven walking cycle
+      const scrollDiff = Math.abs(targetScroll - currentScroll);
+      currentScroll += (targetScroll - currentScroll) * 0.12;
+
+      if (scrollDiff > 0.1) {
+        walkPhase += scrollDiff * 0.02;
+      }
+
+      const legAngle = Math.sin(walkPhase) * 0.48;
+      const armAngle = Math.sin(walkPhase) * 0.38;
+
+      if (legs.length === 2) {
+        legs[0].rotation.x = legAngle;   // Left leg forward/back
+        legs[1].rotation.x = -legAngle;  // Right leg opposite
+      }
+
       ears.forEach((ear, i) => (ear.rotation.z = (i ? -0.16 : 0.16) + Math.sin(t * 1.8 + i) * 0.045 + Math.sin(gesture * 7) * 0.12));
-      arms.forEach((arm, i) => (arm.rotation.z = (i ? 1 : -1) * (0.15 + Math.sin(t + i) * 0.035) + (i === 1 ? Math.sin(gesture * 8) * 0.4 : 0)));
+      
+      arms.forEach((arm, i) => {
+        const sideSign = i === 0 ? -1 : 1;
+        arm.rotation.z = sideSign * (0.15 + Math.sin(t + i) * 0.035) + (i === 1 ? Math.sin(gesture * 8) * 0.4 : 0);
+        arm.rotation.x = (i === 0 ? -1 : 1) * armAngle;
+      });
+
+      const walkBounce = Math.abs(Math.sin(walkPhase * 2)) * 0.08;
+      group.position.y = Math.sin(t * 1.2) * 0.07 + (Math.sin(Math.min(gesture, 1) * Math.PI) * 0.35) + walkBounce;
     }
 
     function render(now = performance.now()) {
@@ -287,10 +324,18 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
       }
     };
 
+    const onScroll = () => {
+      if (typeof window !== 'undefined') {
+        targetScroll = window.scrollY;
+      }
+      wake();
+    };
+
     host.addEventListener('pointermove', onMove as any);
     host.addEventListener('pointerdown', onMove as any);
     host.addEventListener('pointerleave', onLeave);
     host.addEventListener('keydown', onKey as any);
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     const onPreference = () => {
       paused = reduced.matches;
@@ -343,6 +388,7 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
       host.removeEventListener('pointerdown', onMove as any);
       host.removeEventListener('pointerleave', onLeave);
       host.removeEventListener('keydown', onKey as any);
+      window.removeEventListener('scroll', onScroll);
       document.removeEventListener('visibilitychange', onVisibility);
       reduced.removeEventListener('change', onPreference);
       geometries.forEach((g) => g.dispose());
@@ -358,7 +404,7 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
       ref={containerRef}
       id="visual"
       tabIndex={0}
-      className="relative w-full h-[380px] sm:h-[480px] lg:h-[620px] focus:outline-none focus:ring-2 focus:ring-[#d2ff32] rounded-3xl"
+      className="relative w-full h-[420px] sm:h-[520px] lg:h-[680px] focus:outline-none focus:ring-2 focus:ring-[#d2ff32] rounded-3xl"
     >
       <div className="canvas-mount w-full h-full" />
     </div>
