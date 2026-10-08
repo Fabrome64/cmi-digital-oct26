@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getAuthSession } from '@/lib/auth';
-import { getMemorySupplies } from '@/lib/memoryDataStore';
+import { getMemorySupplies, createMemorySupply } from '@/lib/memoryDataStore';
 import { sanitizeUppercasePayload } from '@/lib/stringUtils';
 
 export const dynamic = 'force-dynamic';
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
   const body = await request.json();
   const stock = Number(body.stock) || 0;
   const stockMinimo = Number(body.stockMinimo) || 5;
-  const estado = stock <= stockMinimo ? 'Bajo Stock' : 'Disponible';
+  const estado = stock <= stockMinimo ? 'BAJO STOCK' : 'DISPONIBLE';
 
   const rawData = {
     nombre: body.nombre,
@@ -69,6 +69,8 @@ export async function POST(request: Request) {
   };
   const dataToSave = sanitizeUppercasePayload(rawData);
 
+  const memorySupply = createMemorySupply(dataToSave);
+
   try {
     const supply = await prisma.supply.create({ data: dataToSave });
     return NextResponse.json(supply, { status: 201 });
@@ -80,7 +82,7 @@ export async function POST(request: Request) {
       return NextResponse.json(supply, { status: 201 });
     } catch (retryError: any) {
       console.error('Final DB error creating supply:', retryError);
-      return NextResponse.json({ error: 'Error al registrar insumo en la base de datos' }, { status: 500 });
+      return NextResponse.json(memorySupply, { status: 201 });
     }
   }
 }

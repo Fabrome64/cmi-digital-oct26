@@ -133,7 +133,13 @@ export function deleteMemoryExpense(id: string) {
 }
 
 // 4. SUPPLIES STORE
-let memorySupplies: any[] = loadData('cmi_supplies.json', []);
+const defaultSupplies = [
+  { id: 'sup-1', nombre: 'VINILO AUTOHADESIVO 1.40M', categoria: 'VINILOS', proveedor: 'GRAFITECH', unidad: 'BOBINA', stock: 8, stockMinimo: 3, costo: 45000, ubicacion: 'ESTANTE A-1', estado: 'DISPONIBLE', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: 'sup-2', nombre: 'TINTA ECO-SOLVENTE NEGRA 1L', categoria: 'TINTAS', proveedor: 'MIMAKI ARG', unidad: 'LITRO', stock: 2, stockMinimo: 3, costo: 65000, ubicacion: 'DEPOSITO B', estado: 'BAJO STOCK', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+  { id: 'sup-3', nombre: 'LONA FRONT 440G 1.60M', categoria: 'LONAS', proveedor: 'PLASTIGRAF', unidad: 'BOBINA', stock: 5, stockMinimo: 2, costo: 89000, ubicacion: 'ESTANTE C-3', estado: 'DISPONIBLE', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+];
+
+let memorySupplies: any[] = loadData('cmi_supplies.json', defaultSupplies);
 
 export function getMemorySupplies() {
   memorySupplies = loadData('cmi_supplies.json', memorySupplies);
