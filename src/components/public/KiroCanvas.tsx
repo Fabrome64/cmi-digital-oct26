@@ -406,7 +406,7 @@ export default function KiroCanvas({ onMountReady, sayHiTrigger = 0 }: KiroCanva
       tabIndex={0}
       className="relative w-full h-[420px] sm:h-[520px] lg:h-[680px] focus:outline-none focus:ring-2 focus:ring-[#d2ff32] rounded-3xl"
     >
-      <div className="canvas-mount w-full h-full" />
+      <div ref={mountRef} className="canvas-mount w-full h-full" />
     </div>
   );
 }
