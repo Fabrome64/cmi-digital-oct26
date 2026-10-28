@@ -86,3 +86,181 @@ body {
 .animate-float {
   animation: float 4s ease-in-out infinite;
 }
+
+/* ========================================================
+   HERO CAROUSEL / SLIDER STYLES (Scoped under .hero-slider)
+   ======================================================== */
+.hero-slider {
+  position: relative;
+  width: 100%;
+  height: 85vh;
+  min-height: 520px;
+  max-height: 850px;
+  overflow: hidden;
+  background-color: #111;
+}
+
+@media (min-width: 1024px) {
+  .hero-slider {
+    height: 100vh;
+  }
+}
+
+.hero-slider .slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0; /* Oculto por defecto */
+  transition: opacity 1s ease-in-out; /* Efecto Fade */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.hero-slider .slide.active {
+  opacity: 1;
+  z-index: 2;
+  /* Efecto sutil de movimiento en la imagen de fondo */
+  animation: zoomBackground 10s infinite alternate;
+}
+
+@keyframes zoomBackground {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.05); }
+}
+
+.hero-slider .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45); /* Oscurece la imagen para que se lea el texto */
+  z-index: 2;
+}
+
+.hero-slider .slide-content {
+  position: relative;
+  z-index: 3;
+  text-align: center;
+  color: #fff;
+  font-family: var(--font-poppins), 'Arial', sans-serif;
+  transform: translateY(30px);
+  opacity: 0;
+  transition: all 0.8s ease-in-out 0.4s;
+  padding: 0 24px;
+  max-width: 900px;
+}
+
+.hero-slider .slide.active .slide-content {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.hero-slider .slide-content h2 {
+  font-size: clamp(2rem, 5.5vw, 3.5rem);
+  line-height: 1.1;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 800;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+.hero-slider .slide-content p {
+  font-size: clamp(1rem, 2.5vw, 1.25rem);
+  margin-bottom: 30px;
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.5;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.5);
+}
+
+.hero-slider .btn-hero {
+  display: inline-block;
+  padding: 15px 35px;
+  background-color: #222;
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border: 2px solid #fff;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.hero-slider .btn-hero:hover {
+  background-color: #fff;
+  color: #222;
+}
+
+/* Flechas */
+.hero-slider .arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  padding: 12px 18px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.3s, color 0.3s;
+  user-select: none;
+}
+
+.hero-slider .arrow:hover {
+  background: rgba(255, 255, 255, 0.85);
+  color: #000;
+}
+
+.hero-slider .prev {
+  left: 20px;
+}
+
+.hero-slider .next {
+  right: 20px;
+}
+
+@media (max-width: 640px) {
+  .hero-slider .prev {
+    left: 8px;
+  }
+  .hero-slider .next {
+    right: 8px;
+  }
+}
+
+/* Paginación (Puntos) */
+.hero-slider .dots {
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+
+.hero-slider .dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 0 6px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.hero-slider .dot.active,
+.hero-slider .dot:hover {
+  background: #fff;
+  transform: scale(1.2);
+}
