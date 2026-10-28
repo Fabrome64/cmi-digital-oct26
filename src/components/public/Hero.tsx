@@ -78,12 +78,12 @@ export default function Hero({
     setCurrentIndex(slideIndex + 1);
   };
 
-  // Autoplay con loop cada 20 segundos
+  // Autoplay con loop cada 8 segundos
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
       changeSlide(1);
-    }, 20000); // 20 segundos exactos entre slide y slide
+    }, 8000); // 8 segundos exactos entre slide y slide
     return () => clearInterval(timer);
   }, [changeSlide, isPaused]);
 
