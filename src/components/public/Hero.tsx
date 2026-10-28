@@ -14,7 +14,7 @@ interface HeroProps {
 export default function Hero({
   whatsapp = '5493458659792',
 }: HeroProps) {
-  const slides = [
+  const baseSlides = [
     {
       id: 1,
       image: '/hero/banner-imprenta-grafica.png',
@@ -53,35 +53,64 @@ export default function Hero({
     },
   ];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Extended slides with clones for seamless infinite sliding loop
+  // [Clone 4, Slide 1, Slide 2, Slide 3, Slide 4, Clone 1]
+  const extendedSlides = [
+    { ...baseSlides[baseSlides.length - 1], uniqueKey: 'clone-prev' },
+    ...baseSlides.map((s) => ({ ...s, uniqueKey: `slide-${s.id}` })),
+    { ...baseSlides[0], uniqueKey: 'clone-next' },
+  ];
+
+  const [currentIndex, setCurrentIndex] = useState(1); // Starts at real Slide 1
+  const [isTransitioning, setIsTransitioning] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
-  // Cambiar slide con flechas (+1 o -1)
+  // Avanzar o retroceder slide
   const changeSlide = useCallback((direction: number) => {
-    setCurrentIndex((prev) => {
-      let next = prev + direction;
-      if (next >= slides.length) next = 0;
-      if (next < 0) next = slides.length - 1;
-      return next;
-    });
-  }, [slides.length]);
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev + direction);
+  }, []);
 
-  // Cambiar slide con los puntos (dots)
-  const goToSlide = (index: number) => {
-    setCurrentIndex(index);
+  // Navegar directamente a un slide desde los puntos (dots)
+  const goToSlide = (slideIndex: number) => {
+    setIsTransitioning(true);
+    setCurrentIndex(slideIndex + 1);
   };
 
-  // Autoplay cada 5 segundos (pausa al pasar el mouse por encima)
+  // Autoplay con loop cada 20 segundos
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
       changeSlide(1);
-    }, 5000);
+    }, 20000); // 20 segundos exactos entre slide y slide
     return () => clearInterval(timer);
   }, [changeSlide, isPaused]);
 
-  // Soporte para gestos táctiles (Swipe en móvil)
+  // Manejo de loop infinito sin saltos al terminar la animación CSS
+  const handleTransitionEnd = () => {
+    if (currentIndex >= extendedSlides.length - 1) {
+      // Llegó al clon de Slide 1 al final -> saltar instantáneamente a Slide 1 real
+      setIsTransitioning(false);
+      setCurrentIndex(1);
+    } else if (currentIndex <= 0) {
+      // Llegó al clon de Slide 4 al inicio -> saltar instantáneamente a Slide 4 real
+      setIsTransitioning(false);
+      setCurrentIndex(baseSlides.length);
+    }
+  };
+
+  // Re-activar la transición en el siguiente frame después de saltar
+  useEffect(() => {
+    if (!isTransitioning) {
+      const raf = requestAnimationFrame(() => {
+        setIsTransitioning(true);
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [isTransitioning]);
+
+  // Gestos táctiles para móviles (Swipe)
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -93,13 +122,16 @@ export default function Hero({
 
     if (Math.abs(diff) > 40) {
       if (diff > 0) {
-        changeSlide(1); // Swipe izquierda -> Siguiente
+        changeSlide(1); // Swipe izquierda -> siguiente
       } else {
-        changeSlide(-1); // Swipe derecha -> Anterior
+        changeSlide(-1); // Swipe derecha -> anterior
       }
     }
     touchStartX.current = null;
   };
+
+  // Índice activo para los puntos de paginación (0 a 3)
+  const activeDotIndex = (currentIndex - 1 + baseSlides.length) % baseSlides.length;
 
   return (
     <section
@@ -110,14 +142,20 @@ export default function Hero({
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="slider-wrapper relative w-full h-full">
-        {slides.map((slide, index) => {
-          const isActive = index === currentIndex;
-          return (
+      <div className="slider-wrapper relative w-full h-full overflow-hidden">
+        {/* Track horizontal con animación slide */}
+        <div
+          className="slider-track"
+          style={{
+            transform: `translateX(-${currentIndex * 100}%)`,
+            transition: isTransitioning ? 'transform 0.75s cubic-bezier(0.25, 1, 0.5, 1)' : 'none',
+          }}
+          onTransitionEnd={handleTransitionEnd}
+        >
+          {extendedSlides.map((slide, index) => (
             <div
-              key={slide.id}
-              className={`slide ${isActive ? 'active' : ''}`}
-              aria-hidden={!isActive}
+              key={slide.uniqueKey}
+              className="slide"
             >
               {/* Imagen ocupando el 100% del área de la sección a lo ancho */}
               <a
@@ -129,7 +167,7 @@ export default function Hero({
                   src={slide.image}
                   alt={slide.alt}
                   className="w-full h-full object-cover sm:object-fill block"
-                  loading={index === 0 ? 'eager' : 'lazy'}
+                  loading={index <= 2 ? 'eager' : 'lazy'}
                 />
               </a>
 
@@ -154,8 +192,8 @@ export default function Hero({
                 </a>
               </div>
             </div>
-          );
-        })}
+          ))}
+        </div>
       </div>
 
       {/* Flechas de navegación */}
@@ -179,11 +217,11 @@ export default function Hero({
 
       {/* Indicadores / Paginación (Puntos) */}
       <div className="dots">
-        {slides.map((slide, index) => (
+        {baseSlides.map((slide, index) => (
           <button
             key={slide.id}
             type="button"
-            className={`dot ${index === currentIndex ? 'active' : ''}`}
+            className={`dot ${index === activeDotIndex ? 'active' : ''}`}
             onClick={() => goToSlide(index)}
             aria-label={`Ir al banner ${index + 1}: ${slide.title}`}
           />
