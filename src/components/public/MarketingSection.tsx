@@ -51,7 +51,13 @@ export default function MarketingSection({ whatsapp = '5493437421589' }: Marketi
   ];
 
   return (
-    <section id="marketing-redes" className="py-20 bg-gradient-to-b from-white via-[#E8FCFF] to-white border-t border-cyan-100">
+    <section
+      id="marketing-redes"
+      className="py-20 border-t border-emerald-200/60"
+      style={{
+        background: 'linear-gradient(135deg, #90EE90 0%, #FFDAB9 100%)',
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* HEADER SECTION */}

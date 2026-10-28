@@ -58,7 +58,13 @@ export default function WebDesignSection({ whatsapp = '5493437421589' }: WebDesi
     : portfolio.filter((item) => item.categoria === activeCategory);
 
   return (
-    <section id="diseno-web" className="py-20 bg-gradient-to-b from-white via-[#EAF3FF] to-white border-t border-blue-100">
+    <section
+      id="diseno-web"
+      className="py-20 border-t border-indigo-200/60"
+      style={{
+        background: 'linear-gradient(135deg, #E6E6FA 0%, #ADD8E6 100%)',
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* HEADER SECTION */}

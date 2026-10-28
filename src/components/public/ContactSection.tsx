@@ -26,19 +26,23 @@ export default function ContactSection({
   const googleMapsDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
 
   return (
-    <section id="contacto" className="py-20 bg-white border-t border-gray-100">
+    <section
+      id="contacto"
+      className="py-20 border-t border-blue-400"
+      style={{ backgroundColor: '#4169E1' }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center space-x-2 bg-yellow-100 text-yellow-800 px-4 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase mb-3">
-            <MapPin className="w-4 h-4 text-yellow-700" />
+          <div className="inline-flex items-center space-x-2 bg-yellow-400 text-gray-950 px-4 py-1.5 rounded-full text-xs font-extrabold tracking-wider uppercase mb-3 shadow">
+            <MapPin className="w-4 h-4 text-gray-900" />
             <span>Atención Personalizada</span>
           </div>
-          <h2 className="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight">
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight drop-shadow-sm">
             ¿DÓNDE ESTAMOS?
           </h2>
-          <p className="text-lg text-gray-600 mt-2 font-medium">
+          <p className="text-lg text-blue-100 mt-2 font-medium">
             Visitanos en nuestro taller comercial o comunicate directamente con nuestro equipo.
           </p>
         </div>
@@ -47,7 +51,7 @@ export default function ContactSection({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
           
           {/* Left Column: Contact Cards */}
-          <div className="lg:col-span-5 bg-gray-50 p-8 sm:p-10 rounded-3xl border border-gray-200 shadow-sm flex flex-col justify-between space-y-8">
+          <div className="lg:col-span-5 bg-white p-8 sm:p-10 rounded-3xl border border-white/20 shadow-xl flex flex-col justify-between space-y-8">
             
             <div className="space-y-6">
               <h3 className="text-2xl font-extrabold text-gray-900 border-b pb-3">
@@ -151,7 +155,7 @@ export default function ContactSection({
           </div>
 
           {/* Right Column: Google Maps Iframe */}
-          <div className="lg:col-span-7 rounded-3xl overflow-hidden shadow-lg border-4 border-gray-900 min-h-[400px]">
+          <div className="lg:col-span-7 rounded-3xl overflow-hidden shadow-xl border-4 border-white min-h-[400px]">
             <iframe
               src={googleMapsIframe}
               width="100%"
