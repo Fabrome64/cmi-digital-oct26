@@ -20,8 +20,7 @@ export default function Hero({
       image: '/hero/banner-imprenta-grafica.png',
       alt: 'CMI Digital - Área Imprenta Gráfica: Talonarios, Rifas, Volantes y Folletos',
       title: 'ÁREA IMPRENTA GRÁFICA',
-      subtitle: 'Talonarios, Rifas, Volantes, Folletos e Impresión de Alta Calidad',
-      btnText: 'Ver Imprenta Gráfica',
+      btnText: 'Ver Imprenta',
       btnHref: '#impresiones',
       waMessage: 'Hola CMI Digital, quiero consultar por Talonarios, Volantes e Imprenta Gráfica.',
     },
@@ -30,7 +29,6 @@ export default function Hero({
       image: '/hero/banner-gran-formato.png',
       alt: 'CMI Digital - Área Impresiones Gran Formato: Cartelería, Lonas y Vinilos',
       title: 'IMPRESIONES GRAN FORMATO',
-      subtitle: 'Cartelería, Lonas de Alta Densidad, Vinilos y Banners',
       btnText: 'Ver Gran Formato',
       btnHref: '#impresiones',
       waMessage: 'Hola CMI Digital, quiero consultar por Cartelería y Lonas Gran Formato.',
@@ -40,8 +38,7 @@ export default function Hero({
       image: '/hero/banner-diseno-web.png',
       alt: 'CMI Digital - Área Diseño Web / PWA: Sitios web intuitivos y conversión por WhatsApp',
       title: 'DISEÑO WEB & PWA',
-      subtitle: 'Sitios web modernos, tiendas online y aplicaciones instalables PWA',
-      btnText: 'Ver Diseño Web & PWA',
+      btnText: 'Ver Diseño Web',
       btnHref: '#diseno-web',
       waMessage: 'Hola CMI Digital, quiero consultar por Desarrollo de Sitio Web y PWA.',
     },
@@ -50,8 +47,7 @@ export default function Hero({
       image: '/hero/banner-marketing-digital.png',
       alt: 'CMI Digital - Área Marketing Digital: Gestión de Redes Sociales y Contenido Profesional',
       title: 'MARKETING DIGITAL',
-      subtitle: 'Gestión de redes sociales, anuncios y más clientes para tu negocio',
-      btnText: 'Ver Marketing Digital',
+      btnText: 'Ver Marketing',
       btnHref: '#marketing-redes',
       waMessage: 'Hola CMI Digital, quiero consultar por Gestión de Redes Sociales y Marketing.',
     },
@@ -76,7 +72,7 @@ export default function Hero({
     setCurrentIndex(index);
   };
 
-  // Autoplay cada 5 segundos (pausa cuando el usuario pasa el mouse)
+  // Autoplay cada 5 segundos (pausa al pasar el mouse por encima)
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
@@ -108,13 +104,13 @@ export default function Hero({
   return (
     <section
       id="inicio"
-      className="hero-slider relative w-full overflow-hidden bg-[#0a1128] select-none"
+      className="hero-slider relative w-full overflow-hidden bg-[#060d24] select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
     >
-      <div className="slider-wrapper relative w-full h-full flex items-center justify-center">
+      <div className="slider-wrapper relative w-full h-full">
         {slides.map((slide, index) => {
           const isActive = index === currentIndex;
           return (
@@ -123,47 +119,39 @@ export default function Hero({
               className={`slide ${isActive ? 'active' : ''}`}
               aria-hidden={!isActive}
             >
-              {/* Fondo ambiental difuminado con el color del banner */}
-              <div
-                className="slide-ambient-bg"
-                style={{ backgroundImage: `url('${slide.image}')` }}
-              />
-              <div className="overlay"></div>
+              {/* Imagen ocupando el 100% del área de la sección a lo ancho */}
+              <a
+                href={slide.btnHref}
+                className="slide-banner-link block w-full h-full relative cursor-pointer"
+                title={`${slide.title} - Clic para ver más`}
+              >
+                <img
+                  src={slide.image}
+                  alt={slide.alt}
+                  className="w-full h-full object-cover sm:object-fill block"
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                />
+              </a>
 
-              {/* Contenedor central del banner adaptado */}
-              <div className="slide-content">
+              {/* Botones por arriba ubicados estratégicamente en la esquina superior derecha */}
+              <div className="slide-top-actions absolute top-2 right-2 sm:top-4 sm:right-6 lg:top-6 lg:right-10 z-20 flex items-center gap-1.5 sm:gap-3">
                 <a
                   href={slide.btnHref}
-                  className="banner-card-link group block relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/20 transition-transform duration-300 transform hover:scale-[1.01]"
-                  title={`${slide.title} - Clic para ver más`}
+                  className="btn-hero-pill"
                 >
-                  <img
-                    src={slide.image}
-                    alt={slide.alt}
-                    className="w-full h-auto object-contain block"
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                  />
-                  {/* Sutil brillo al pasar el mouse */}
-                  <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors pointer-events-none" />
+                  <span>{slide.btnText}</span>
+                  <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-1 inline-block opacity-85" />
                 </a>
 
-                {/* Botonera de acción adaptada */}
-                <div className="slide-actions">
-                  <a href={slide.btnHref} className="btn-hero">
-                    <span>{slide.btnText}</span>
-                    <ExternalLink className="w-4 h-4 ml-2 inline-block opacity-80" />
-                  </a>
-
-                  <a
-                    href={getWhatsAppUrl(whatsapp, 'GENERAL', slide.waMessage)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-hero-wa"
-                  >
-                    <MessageSquare className="w-4 h-4 mr-2 text-green-400" />
-                    <span>Consultar WhatsApp</span>
-                  </a>
-                </div>
+                <a
+                  href={getWhatsAppUrl(whatsapp, 'GENERAL', slide.waMessage)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-hero-wa-pill"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1 text-green-300" />
+                  <span>Pedir Presupuesto</span>
+                </a>
               </div>
             </div>
           );
@@ -177,7 +165,7 @@ export default function Hero({
         onClick={() => changeSlide(-1)}
         aria-label="Banner anterior"
       >
-        <ChevronLeft className="w-6 h-6 sm:w-8 sm:h-8" />
+        <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7" />
       </button>
 
       <button
@@ -186,7 +174,7 @@ export default function Hero({
         onClick={() => changeSlide(1)}
         aria-label="Siguiente banner"
       >
-        <ChevronRight className="w-6 h-6 sm:w-8 sm:h-8" />
+        <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7" />
       </button>
 
       {/* Indicadores / Paginación (Puntos) */}
